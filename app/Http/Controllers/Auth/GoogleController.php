@@ -35,7 +35,6 @@ class GoogleController extends Controller
                     ]);
                 }
 
-                // Đề phòng trường hợp user cũ là ứng viên nhưng trước đó bị lỗi chưa có profile
                 if ($existingUser->role === 'candidate' && !$existingUser->candidateProfile) {
                     $profile = new CandidateProfile();
                     $profile->user_id = $existingUser->id;
@@ -50,7 +49,6 @@ class GoogleController extends Controller
                     'email' => $googleUser->getEmail(),
                     'google_id' => $googleUser->getId(),
                     'role' => 'candidate',
-                    // BẮT BUỘC PHẢI CÓ để tránh lỗi cột password not null trong DB
                     'password' => Hash::make(Str::random(24)),
                 ]);
 
@@ -65,10 +63,7 @@ class GoogleController extends Controller
             return $this->redirectByRole(Auth::user());
 
         } catch (Exception $e) {
-            // 👉 GHI LOG ĐỂ BIẾT CHÍNH XÁC LỖI GÌ
             Log::error('Lỗi đăng nhập Google: ' . $e->getMessage());
-
-            // Tạm thời in thẳng lỗi ra màn hình để bạn dễ debug (Khi nào web chạy thật thì xóa nối chuỗi $e->getMessage() đi nhé)
             return redirect('/login')->with('error', 'Google Auth failed: ' . $e->getMessage());
         }
     }

@@ -10,7 +10,8 @@ class CandidateProfile extends Model
         'user_id',
         'phone',
         'address',
-        'bio'
+        'bio',
+        'avatar',
     ];
 
     public function user()

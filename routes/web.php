@@ -2,6 +2,17 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+
+use App\Http\Controllers\Candidate\DashboardController;
+use App\Http\Controllers\Candidate\ProfileController;
+use App\Http\Controllers\Candidate\SavedJobController;
+use App\Http\Controllers\Candidate\CvController;
+use App\Http\Controllers\Candidate\AiReviewController;
+use App\Http\Controllers\Candidate\ApplicationController;
 /*
 |--------------------------------------------------------------------------
 | 1. PUBLIC ROUTES (Khách vãng lai ai cũng xem được)
@@ -32,31 +43,48 @@ Route::get('/contact', function () {
 
 /*
 |--------------------------------------------------------------------------
-| 2. AUTH ROUTES (Xác thực người dùng)
+| AUTH ROUTES
 |--------------------------------------------------------------------------
-| Trỏ vào thư mục: resources/views/auth/
 */
-Route::post('/logout', function () {
-    Auth::logout();
-    return redirect('/');
-})->name('logout');
-Route::get('/auth/google/redirect', [GoogleController::class, 'redirectToGoogle'])
-    ->name('auth.google.redirect');
 
-Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])
-    ->name('auth.google.callback');
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login');
-Route::get('/register', function () {
-    return view('auth.register');
-})->name('register');
-Route::get('/forgot-password', function () {
-    return view('auth.passwords.email');
-})->name('password.request');
-Route::get('/reset-password', function () {
-    return view('auth.passwords.reset');
-})->name('password.reset');
+Route::prefix('auth')->group(function () {
+    Route::get('/google/redirect', [GoogleController::class, 'redirectToGoogle'])
+        ->name('auth.google.redirect');
+
+    Route::get('/google/callback', [GoogleController::class, 'handleGoogleCallback'])
+        ->name('auth.google.callback');
+});
+
+
+Route::controller(LoginController::class)->group(function () {
+    Route::get('/login', 'showLoginForm')->name('login');
+    Route::post('/login', 'login');
+    Route::post('/logout', 'logout')->name('logout');
+});
+
+
+Route::controller(RegisterController::class)->group(function () {
+    Route::get('/register', 'showRegistrationForm')->name('register');
+    Route::post('/register', 'register');
+});
+
+
+Route::prefix('password')->group(function () {
+    Route::get('/forgot', function () {
+        return view('auth.passwords.email');
+    })->name('password.request');
+
+    Route::post('/forgot', [ForgotPasswordController::class, 'sendResetLinkEmail'])
+        ->name('password.email');
+
+    // Reset mật khẩu
+    Route::get('/reset/{token}', function ($token) {
+        return view('auth.passwords.reset', ['token' => $token]);
+    })->name('password.reset');
+
+    Route::post('/reset', [ResetPasswordController::class, 'reset'])
+        ->name('password.update');
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -65,24 +93,48 @@ Route::get('/reset-password', function () {
 | Trỏ vào thư mục: resources/views/candidate/
 | Lưu ý: Sau này sẽ thêm Middleware `auth` và kiểm tra Role = Candidate vào Group này
 */
-Route::prefix('candidate')->name('candidate.')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('candidate.dashboard');
-    })->name('dashboard');
-    Route::get('/profile', function () {
-        return view('candidate.profile');
-    })->name('profile');
-    Route::get('/saved-jobs', function () {
-        return view('candidate.saved_jobs');
-    })->name('saved_jobs');
 
-    // Quản lý CV
-    Route::get('/cv', function () {
-        return view('candidate.cv.index');
-    })->name('cv.index');
-    Route::get('/cv/review', function () {
-        return view('candidate.cv.review_parsed_data');
-    })->name('cv.review');
+Route::prefix('candidate')->name('candidate.')->middleware('auth')->group(function () {
+
+    //
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    //
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.update_avatar');
+
+    //
+    Route::get('/saved-jobs', [SavedJobController::class, 'index'])->name('saved_jobs');
+    Route::post('/saved-jobs/{job}/toggle', [SavedJobController::class, 'toggle'])->name('saved_jobs.toggle');
+
+    //
+    Route::prefix('cv')->name('cv.')->group(function () {
+        Route::get('/', [CvController::class, 'index'])->name('index');
+        Route::post('/upload', [CvController::class, 'store'])->name('store');
+        Route::post('/{id}/default', [CvController::class, 'setDefault'])->name('set_default');
+        Route::delete('/{id}', [CvController::class, 'destroy'])->name('destroy');
+        Route::put('/{id}/update-name', [CvController::class, 'updateName'])->name('update_name');
+        Route::get('/{id}/review', [CvController::class, 'reviewParsedData'])->name('review');
+        Route::put('/{id}/parsed-data', [CvController::class, 'updateParsedData'])->name('update_parsed');
+        Route::get('/{id}', [CvController::class, 'show'])->name('show');
+        Route::get('/{id}/download', [CvController::class, 'downloadPdf'])->name('download');
+        Route::post('/generate-and-save', [CvController::class, 'generateAndSaveCv'])->name('generate_and_save');
+    });
+    Route::prefix('ai-review')->name('ai_review.')->group(function () {
+        Route::get('/', [AiReviewController::class, 'index'])->name('index');
+        Route::post('/process', [AiReviewController::class, 'process'])->name('process');
+    });
+    Route::prefix('applications')->name('applications.')->group(function () {
+
+        Route::get('/', [ApplicationController::class, 'index'])->name('index');
+
+        Route::get('/recommendations', [ApplicationController::class, 'recommendations'])->name('recommendations');
+    });
+});
+
+Route::prefix('candidate')->name('candidate.')->group(function () {
+
 
     // Lịch sử ứng tuyển & Gợi ý
     Route::get('/applications', function () {

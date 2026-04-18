@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     protected $fillable = [
         'name',
@@ -21,7 +22,6 @@ class User extends Authenticatable
         'password',
     ];
 
-    // Quan hệ
     public function candidateProfile()
     {
         return $this->hasOne(CandidateProfile::class);
@@ -34,7 +34,14 @@ class User extends Authenticatable
 
     public function cvs()
     {
-        return $this->hasMany(Cv::class);
+        return $this->hasMany(Cv::class, 'user_id', 'id');
+    }
+
+    public function savedJobs()
+    {
+        return $this->belongsToMany(JobPost::class, 'saved_jobs', 'candidate_id', 'job_post_id')
+            ->withPivot('created_at')
+            ->orderByPivot('created_at', 'desc');
     }
 
     public function applications()

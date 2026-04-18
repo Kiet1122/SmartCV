@@ -87,7 +87,7 @@
         <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
             <div class="flex justify-between items-center py-4 md:py-5">
                 <!-- Logo -->
-                <div class="flex items-center space-x-2">
+                <div class="flex items-center space-x-2 cursor-pointer" onclick="window.location='{{ route('home') }}'">
                     <i class="fas fa-brain text-blue-600 text-2xl"></i>
                     <span
                         class="text-2xl font-bold bg-gradient-to-r from-blue-700 to-indigo-600 bg-clip-text text-transparent">SmartCV</span>

@@ -90,7 +90,7 @@
                         </div>
 
                         <!-- Login Form -->
-                        <form action="#" method="POST">
+                        <form method="POST" action="{{ route('login') }}">
                             @csrf
 
                             <!-- Email Field -->
@@ -132,11 +132,14 @@
                                         class="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
                                     <span class="text-sm text-gray-600">Ghi nhớ đăng nhập</span>
                                 </label>
-                                <a href="#" class="text-sm text-blue-600 hover:text-blue-700 hover:underline transition">
+                                <a href="{{ route('password.request') }}"
+                                    class="text-sm text-blue-600 hover:text-blue-700 hover:underline transition">
                                     Quên mật khẩu?
                                 </a>
                             </div>
-
+                            @error('email')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                             <!-- Login Button -->
                             <button type="submit"
                                 class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 rounded-xl transition shadow-md hover:shadow-lg flex items-center justify-center gap-2">
@@ -177,7 +180,8 @@
                         <!-- Register Link -->
                         <p class="text-center text-gray-600 mt-6 text-sm">
                             Chưa có tài khoản?
-                            <a href="#" class="text-blue-600 font-semibold hover:text-blue-700 hover:underline transition">
+                            <a href="{{ route('register') }}"
+                                class="text-blue-600 font-semibold hover:text-blue-700 hover:underline transition">
                                 Đăng ký ngay
                             </a>
                         </p>

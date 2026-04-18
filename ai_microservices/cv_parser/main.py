@@ -9,6 +9,7 @@ from openai import OpenAI
 
 app = FastAPI()
 load_dotenv()
+
 # Khởi tạo Client kết nối đến Groq API (Biến toàn cục)
 client = OpenAI(
     api_key=os.getenv("GROQ_API_KEY"), # API Key của bạn
@@ -63,21 +64,26 @@ def calculate_exact_experience(work_experience_list):
 
 def parse_cv_with_groq(raw_text):
     """Hàm yêu cầu AI bóc tách dữ liệu ra thành các trường cấu trúc bằng Tiếng Anh"""
+    
     prompt = f"""
     You are an expert Human Resources (HR) professional. Read the raw CV text below and extract the information into a structured JSON format.
     You MUST return a valid JSON object. If information for a specific field is not found, leave it as an empty array [] or null.
     Absolutely do not calculate the total years of experience yourself.
     
-    CRITICAL: You must translate ALL extracted content (including summary, descriptions, job titles, etc.) into ENGLISH, regardless of the original language of the CV.
+    CRITICAL: You must translate ALL extracted content (including summary, descriptions, job titles, achievements, etc.) into ENGLISH, regardless of the original language of the CV.
 
     Required JSON Structure:
     {{
         "personal_info": {{
             "name": "Candidate Name",
             "email": "Email",
-            "phone": "Phone Number"
+            "phone": "Phone Number",
+            "address": "Address or Location if available",
+            "github": "Github link if available",
+            "portfolio": "Portfolio or Personal Website link if available"
         }},
-        "skills": ["Skill 1", "Skill 2"],
+        "skills": ["Tech Skill 1", "Tech Skill 2"],
+        "soft_skills": ["Soft Skill 1", "Soft Skill 2"],
         "summary": "Brief summary of competencies in 2 sentences",
         "education": [
             {{
@@ -99,18 +105,26 @@ def parse_cv_with_groq(raw_text):
                 "description": "Brief description of tasks performed"
             }}
         ],
+        "projects": [
+            {{
+                "name": "Project Name",
+                "description": "Brief description of the project and the candidate's role",
+                "technologies": ["Tech 1", "Tech 2"]
+            }}
+        ],
+        "achievements": ["Achievement 1", "Achievement 2"],
         "certifications": ["Certification Name 1", "Certification Name 2"],
         "languages": ["Language 1", "Language 2"]
     }}
 
-    IMPORTANT NOTES FOR 'work_experience':
-    - If it is the current job (e.g., working until "present", "now", "hiện tại"), set "is_current": true and leave "end_month" and "end_year" as null.
-    - If the CV does not explicitly state the month, leave "start_month" and "end_month" as null.
+    IMPORTANT NOTES:
+    - For 'work_experience': If it is the current job, set "is_current": true and leave "end_month" and "end_year" as null. If the month is not stated, leave "start_month" and "end_month" as null.
+    - For 'languages' & 'certifications': DO NOT ignore test scores (e.g., TOEIC, IELTS, JLPT). If the CV says "Toeic 500", infer the language and extract it into 'languages' as "English (TOEIC 500)". Also add "TOEIC 500" into the 'certifications' array.
 
     Raw CV text:
     {raw_text}
     """
-
+    
     try:
         response = client.chat.completions.create(
             model="llama-3.3-70b-versatile",

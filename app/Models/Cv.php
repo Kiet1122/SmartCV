@@ -8,6 +8,7 @@ class Cv extends Model
 {
     protected $fillable = [
         'user_id',
+        'cv_name',
         'file_url',
         'raw_text',
         'parsed_data',
@@ -20,9 +21,16 @@ class Cv extends Model
         'is_default' => 'boolean'
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'parsed_data' => 'array',
+        ];
+    }
+
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public function experiences()
@@ -39,5 +47,10 @@ class Cv extends Model
     {
         return $this->belongsToMany(Language::class, 'cv_language')
             ->withPivot('proficiency');
+    }
+
+    public function review()
+    {
+        return $this->hasOne(CvReview::class);
     }
 }
