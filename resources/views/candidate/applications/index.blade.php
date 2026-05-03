@@ -118,7 +118,7 @@
                                 <div>
                                     <h3
                                         class="text-lg font-bold text-gray-900 font-['Manrope'] hover:text-blue-600 transition-colors">
-                                        <a href="{{ route('candidate.jobs.show', $app->jobPost->id) }}">
+                                        <a href="{{ route('public.jobs.show', $app->jobPost->id) }}">
                                             {{ $app->jobPost->title ?? 'Công việc không xác định' }}
                                         </a>
                                     </h3>
@@ -158,7 +158,7 @@
 
                         {{-- Action Button --}}
                         <div class="flex flex-row md:flex-col gap-2 justify-end">
-                            <a href="{{ route('candidate.jobs.show', $app->jobPost->id) }}"
+                            <a href="{{ route('public.jobs.show', $app->jobPost->id) }}"
                                 class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-blue-600 bg-gray-50 hover:bg-blue-50 rounded-xl transition-all text-center">
                                 Xem chi tiết
                             </a>

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\JobPost;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\SavedJob;
+
 
 class SavedJobController extends Controller
 {
@@ -26,15 +28,51 @@ class SavedJobController extends Controller
     /**
      * Xử lý chức năng Lưu / Bỏ lưu công việc (Toggle)
      */
-    public function toggle(Request $request, $jobId)
+    public function toggle(JobPost $job)
     {
-        $user = Auth::user();
+        try {
+            $candidate = auth()->user()->candidateProfile;
 
-        // Lệnh toggle() cực kỳ thông minh của Laravel:
-        // Nếu đã lưu rồi -> Tự động xóa (Bỏ lưu)
-        // Nếu chưa lưu -> Tự động thêm vào (Lưu)
-        $user->savedJobs()->toggle($jobId);
+            if (!$candidate) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Không tìm thấy hồ sơ ứng viên'
+                ], 404);
+            }
 
-        return back()->with('success', 'Đã cập nhật trạng thái lưu công việc!');
+            $exists = SavedJob::where('candidate_id', $candidate->id)
+                ->where('job_post_id', $job->id)
+                ->exists();
+
+            if ($exists) {
+                SavedJob::where('candidate_id', $candidate->id)
+                    ->where('job_post_id', $job->id)
+                    ->delete();
+
+                return response()->json([
+                    'success' => true,
+                    'saved' => false,
+                    'message' => 'Đã xóa khỏi danh sách đã lưu'
+                ]);
+            } else {
+                SavedJob::create([
+                    'candidate_id' => $candidate->id,
+                    'job_post_id' => $job->id,
+                    'created_at' => now()
+                ]);
+
+                return response()->json([
+                    'success' => true,
+                    'saved' => true,
+                    'message' => 'Đã lưu công việc'
+                ]);
+            }
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

@@ -10,6 +10,7 @@ class Company extends Model
         'user_id',
         'company_name',
         'website',
+        'address',
         'description',
         'logo_url'
     ];

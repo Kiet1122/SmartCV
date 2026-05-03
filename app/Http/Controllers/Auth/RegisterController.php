@@ -60,6 +60,7 @@ class RegisterController extends Controller
                 // Tạo hồ sơ công ty rỗng (Có thể thêm status = 'pending' ở DB)
                 $company = new Company();
                 $company->user_id = $user->id;
+                $company->company_name = $user->name;
                 // $company->status = 'pending'; // Bỏ comment dòng này nếu bạn thiết kế cột status
                 $company->save();
             }

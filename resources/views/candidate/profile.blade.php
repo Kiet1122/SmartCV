@@ -60,10 +60,6 @@
                             <span class="text-sm text-gray-500">Ngày tham gia</span>
                             <span class="text-sm font-medium text-gray-700">{{ $user->created_at->format('d/m/Y') }}</span>
                         </div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm text-gray-500">Mã số</span>
-                            <span class="text-sm font-medium text-gray-700">#{{ $user->id }}</span>
-                        </div>
                     </div>
                 </div>
             </div>

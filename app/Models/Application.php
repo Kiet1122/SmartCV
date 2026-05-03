@@ -16,7 +16,7 @@ class Application extends Model
 
     public function candidate()
     {
-        return $this->belongsTo(User::class, 'candidate_id');
+        return $this->belongsTo(CandidateProfile::class, 'candidate_id');
     }
 
     public function jobPost()
@@ -37,5 +37,9 @@ class Application extends Model
     public function aiMatchingLog()
     {
         return $this->hasOne(AiMatchingLog::class);
+    }
+    public function aiMatching()
+    {
+        return $this->hasOne(\App\Models\AiMatchingLog::class, 'application_id');
     }
 }

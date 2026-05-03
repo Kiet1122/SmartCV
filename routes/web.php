@@ -13,34 +13,58 @@ use App\Http\Controllers\Candidate\SavedJobController;
 use App\Http\Controllers\Candidate\CvController;
 use App\Http\Controllers\Candidate\AiReviewController;
 use App\Http\Controllers\Candidate\ApplicationController;
+
+use App\Http\Controllers\Recruiter\RecruiterDashboardController;
+use App\Http\Controllers\Recruiter\CompanyProfileController;
+use App\Http\Controllers\Recruiter\JobPostController;
+use App\Http\Controllers\Recruiter\ApplicantController;
+use App\Http\Controllers\Recruiter\ReportController;
+
+use App\Http\Controllers\Public\HomeController;
+use App\Http\Controllers\Public\ContactController;
+use App\Http\Controllers\candidate\JobsController;
+
+
 /*
 |--------------------------------------------------------------------------
 | 1. PUBLIC ROUTES (Khách vãng lai ai cũng xem được)
 |--------------------------------------------------------------------------
 | Trỏ vào thư mục: resources/views/public/
 */
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/', fn() => view('public.home'))->name('home');
+Route::prefix('public')->name('public.')->group(function () {
 
-Route::get('/', function () {
-    return view('public.home');
-})->name('home');
-Route::get('/jobs', function () {
-    return view('public.jobs_list');
-})->name('jobs.index');
-Route::get('/jobs/detail', function () {
-    return view('public.job_detail');
-})->name('jobs.show'); // Tạm thời hardcode, sau này sẽ là /jobs/{id}
-Route::get('/companies', function () {
-    return view('public.companies');
-})->name('companies.index');
-Route::get('/about', function () {
-    return view('public.about');
-})->name('about');
-Route::get('/contact', function () {
-    return view('public.contact');
-})->name('contact');
+    Route::get('/', [HomeController::class, 'index'])->name('home');
 
+
+
+
+
+
+    Route::get('/about', [HomeController::class, 'about'])->name('about');
+
+    Route::get('/contact', [ContactController::class, 'index'])->name('contact');
+    Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
+
+
+});
+
+
+
+Route::prefix('candidate')->name('candidate.')->group(function () {
+
+    // Companies
+    Route::get('/companies', [HomeController::class, 'companies'])->name('companies');
+    Route::get('/companies/{company}', [HomeController::class, 'companyShow'])->name('companies.show');
+
+    // Jobs
+    Route::get('/jobs', [JobsController::class, 'index'])->name('jobs.index');
+    Route::get('/jobs/{job}', [JobsController::class, 'show'])->name('jobs.show');
+
+    // Apply job
+    Route::post('/jobs/{job}/apply', [JobsController::class, 'apply'])->name('jobs.apply');
+});
 /*
 |--------------------------------------------------------------------------
 | AUTH ROUTES
@@ -94,57 +118,45 @@ Route::prefix('password')->group(function () {
 | Lưu ý: Sau này sẽ thêm Middleware `auth` và kiểm tra Role = Candidate vào Group này
 */
 
-Route::prefix('candidate')->name('candidate.')->middleware('auth')->group(function () {
+// ================= CANDIDATE =================
+Route::middleware(['auth', 'role:candidate'])
+    ->prefix('candidate')
+    ->name('candidate.')
+    ->group(function () {
 
-    //
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    //
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile');
-    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::post('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.update_avatar');
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile');
+        Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::post('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.update_avatar');
 
-    //
-    Route::get('/saved-jobs', [SavedJobController::class, 'index'])->name('saved_jobs');
-    Route::post('/saved-jobs/{job}/toggle', [SavedJobController::class, 'toggle'])->name('saved_jobs.toggle');
+        Route::get('/saved-jobs', [SavedJobController::class, 'index'])->name('saved_jobs');
+        Route::post('/saved-jobs/{job}/toggle', [SavedJobController::class, 'toggle'])->name('saved_jobs.toggle');
 
-    //
-    Route::prefix('cv')->name('cv.')->group(function () {
-        Route::get('/', [CvController::class, 'index'])->name('index');
-        Route::post('/upload', [CvController::class, 'store'])->name('store');
-        Route::post('/{id}/default', [CvController::class, 'setDefault'])->name('set_default');
-        Route::delete('/{id}', [CvController::class, 'destroy'])->name('destroy');
-        Route::put('/{id}/update-name', [CvController::class, 'updateName'])->name('update_name');
-        Route::get('/{id}/review', [CvController::class, 'reviewParsedData'])->name('review');
-        Route::put('/{id}/parsed-data', [CvController::class, 'updateParsedData'])->name('update_parsed');
-        Route::get('/{id}', [CvController::class, 'show'])->name('show');
-        Route::get('/{id}/download', [CvController::class, 'downloadPdf'])->name('download');
-        Route::post('/generate-and-save', [CvController::class, 'generateAndSaveCv'])->name('generate_and_save');
+        Route::prefix('cv')->name('cv.')->group(function () {
+            Route::get('/', [CvController::class, 'index'])->name('index');
+            Route::post('/upload', [CvController::class, 'store'])->name('store');
+            Route::post('/{id}/default', [CvController::class, 'setDefault'])->name('set_default');
+            Route::delete('/{id}', [CvController::class, 'destroy'])->name('destroy');
+            Route::put('/{id}/update-name', [CvController::class, 'updateName'])->name('update_name');
+            Route::get('/{id}/review', [CvController::class, 'reviewParsedData'])->name('review');
+            Route::put('/{id}/parsed-data', [CvController::class, 'updateParsedData'])->name('update_parsed');
+            Route::get('/{id}', [CvController::class, 'show'])->name('show');
+            Route::get('/{id}/download', [CvController::class, 'downloadPdf'])->name('download');
+            Route::post('/generate-and-save', [CvController::class, 'generateAndSaveCv'])->name('generate_and_save');
+        });
+
+        Route::prefix('ai-review')->name('ai_review.')->group(function () {
+            Route::get('/', [AiReviewController::class, 'index'])->name('index');
+            Route::post('/process', [AiReviewController::class, 'process'])->name('process');
+        });
+
+        Route::prefix('applications')->name('applications.')->group(function () {
+            Route::get('/', [ApplicationController::class, 'index'])->name('index');
+            Route::get('/recommendations', [ApplicationController::class, 'recommendations'])->name('recommendations');
+        });
+
     });
-    Route::prefix('ai-review')->name('ai_review.')->group(function () {
-        Route::get('/', [AiReviewController::class, 'index'])->name('index');
-        Route::post('/process', [AiReviewController::class, 'process'])->name('process');
-    });
-    Route::prefix('applications')->name('applications.')->group(function () {
-
-        Route::get('/', [ApplicationController::class, 'index'])->name('index');
-
-        Route::get('/recommendations', [ApplicationController::class, 'recommendations'])->name('recommendations');
-    });
-});
-
-Route::prefix('candidate')->name('candidate.')->group(function () {
-
-
-    // Lịch sử ứng tuyển & Gợi ý
-    Route::get('/applications', function () {
-        return view('candidate.applications.index');
-    })->name('applications.index');
-    Route::get('/recommendations', function () {
-        return view('candidate.applications.recommendations');
-    })->name('recommendations');
-});
-
 /*
 |--------------------------------------------------------------------------
 | 4. RECRUITER ROUTES (Phân hệ Nhà tuyển dụng)
@@ -152,30 +164,28 @@ Route::prefix('candidate')->name('candidate.')->group(function () {
 | Trỏ vào thư mục: resources/views/recruiter/
 | Lưu ý: Sau này sẽ thêm Middleware `auth` và kiểm tra Role = Recruiter vào Group này
 */
-Route::prefix('recruiter')->name('recruiter.')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('recruiter.dashboard');
-    })->name('dashboard');
-    Route::get('/company-profile', function () {
-        return view('recruiter.company_profile');
-    })->name('company_profile');
 
-    // Quản lý Job
-    Route::get('/jobs', function () {
-        return view('recruiter.jobs.index');
-    })->name('jobs.index');
-    Route::get('/jobs/create', function () {
-        return view('recruiter.jobs.form');
-    })->name('jobs.create');
+// Recruiter routes group
+Route::middleware(['auth', 'role:recruiter'])
+    ->prefix('recruiter')
+    ->name('recruiter.')
+    ->group(function () {
+        Route::get('/dashboard', [RecruiterDashboardController::class, 'index'])->name('dashboard');
 
-    // Hệ thống ATS (Quản lý ứng viên nộp đơn)
-    Route::get('/applicants', function () {
-        return view('recruiter.applicants.index');
-    })->name('applicants.index');
-    Route::get('/applicants/detail', function () {
-        return view('recruiter.applicants.show');
-    })->name('applicants.show');
-});
+        Route::get('/profile', [CompanyProfileController::class, 'edit'])->name('profile');
+        Route::put('/profile', [CompanyProfileController::class, 'update'])->name('update');
+
+        Route::resource('jobs', JobPostController::class);
+        Route::patch('/jobs/{job}/close', [JobPostController::class, 'close'])->name('jobs.close');
+
+        // Trong group 'recruiter'
+        Route::get('/applicants', [ApplicantController::class, 'index'])->name('applicants.index');
+        Route::get('/applicants/job/{job}', [ApplicantController::class, 'listByJob'])->name('applicants.listByJob');
+        Route::get('/applicants/{applicant}', [ApplicantController::class, 'show'])->name('applicants.show');
+
+        Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+    });
+
 
 /*
 |--------------------------------------------------------------------------
@@ -184,28 +194,3 @@ Route::prefix('recruiter')->name('recruiter.')->group(function () {
 | Trỏ vào thư mục: resources/views/admin/
 | Lưu ý: Sau này sẽ thêm Middleware `auth` và kiểm tra Role = Admin vào Group này
 */
-Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('dashboard');
-
-    Route::get('/users', function () {
-        return view('admin.users.index');
-    })->name('users.index');
-    Route::get('/jobs-moderation', function () {
-        return view('admin.jobs.index');
-    })->name('jobs.index');
-
-    // Master Data
-    Route::get('/master-data/skills', function () {
-        return view('admin.master_data.skills');
-    })->name('skills.index');
-    Route::get('/master-data/languages', function () {
-        return view('admin.master_data.languages');
-    })->name('languages.index');
-
-    // Logs AI
-    Route::get('/logs/ai-matching', function () {
-        return view('admin.logs.ai_matching');
-    })->name('logs.ai_matching');
-});

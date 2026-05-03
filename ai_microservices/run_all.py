@@ -16,13 +16,18 @@ if __name__ == "__main__":
     # 3. CV Reviewer (port 8002) - Dùng Llama 3.1 8B (Ollama Local)
     service3 = run_service("uvicorn ai_microservices.cv_reviewer.main:app --port 8002")
 
+    # 4. Job Moderator (Port 8003) - Dịch vụ mới thêm
+    service4 = run_service("uvicorn ai_microservices.job_moderator.main:app --port 8003")
+
     try:
         service1.wait()
         service2.wait()
         service3.wait()
+        service4.wait()
     except KeyboardInterrupt:
         print("\nStopping all services...")
         service1.terminate()
         service2.terminate()
         service3.terminate()
+        service4.terminate()
         print("All services stopped successfully.")

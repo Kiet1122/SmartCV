@@ -11,6 +11,10 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap"
         rel="stylesheet">
+    <!-- Google Material Icons -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+        rel="stylesheet" />
     <!-- custom override for smooth shadows and refined rounding -->
     <style>
         * {
@@ -96,15 +100,15 @@
                 <!-- Desktop Menu -->
                 <nav class="hidden md:flex items-center space-x-8 text-gray-700 font-medium">
 
-                    <a href="{{ route('home') }}" class="hover:text-blue-600 transition">
+                    <a href="{{ route('public.home') }}" class="hover:text-blue-600 transition">
                         Trang chủ
                     </a>
 
-                    <a href="{{ route('jobs.index') }}" class="hover:text-blue-600 transition">
+                    <a href="{{ route('candidate.jobs.index') }}" class="hover:text-blue-600 transition">
                         Công việc
                     </a>
 
-                    <a href="{{ route('companies.index') }}" class="hover:text-blue-600 transition">
+                    <a href="{{ route('candidate.companies') }}" class="hover:text-blue-600 transition">
                         Danh sách công ty
                     </a>
 
@@ -240,7 +244,8 @@
                 <div>
                     <h4 class="font-semibold text-white text-lg mb-4">Giới thiệu</h4>
                     <ul class="space-y-2 text-sm">
-                        <li><a href="{{ route('about') }}" class="hover:text-blue-400 transition">Về chúng tôi</a></li>
+                        <li><a href="{{ route('public.about') }}" class="hover:text-blue-400 transition">Về chúng
+                                tôi</a></li>
                         <li><a href="#" class="hover:text-blue-400 transition">Tuyển dụng</a></li>
                         <li><a href="#" class="hover:text-blue-400 transition">Báo chí</a></li>
                         <li><a href="#" class="hover:text-blue-400 transition">Blog</a></li>
@@ -251,10 +256,11 @@
                 <div>
                     <h4 class="font-semibold text-white text-lg mb-4">Liên hệ</h4>
                     <ul class="space-y-2 text-sm">
-                        <li><a href="{{ route('contact') }}" class="hover:text-blue-400 transition">Trung tâm trợ
+                        <li><a href="{{ route('public.contact') }}" class="hover:text-blue-400 transition">Trung tâm trợ
                                 giúp</a></li>
-                        <li><a href="{{ route('contact') }}" class="hover:text-blue-400 transition">Hỗ trợ</a></li>
-                        <li><a href="{{ route('contact') }}" class="hover:text-blue-400 transition">Liên hệ kinh
+                        <li><a href="{{ route('public.contact') }}" class="hover:text-blue-400 transition">Hỗ trợ</a>
+                        </li>
+                        <li><a href="{{ route('public.contact') }}" class="hover:text-blue-400 transition">Liên hệ kinh
                                 doanh</a></li>
                         <li class="flex items-center gap-2 text-gray-400">
                             <i class="fas fa-envelope"></i> hello@smartcv.ai

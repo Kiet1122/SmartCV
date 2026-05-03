@@ -1,294 +1,285 @@
 @extends('layouts.master')
 
+@section('title', 'Giới thiệu | SmartCV - Nền tảng tuyển dụng thông minh với AI')
+
 @section('content')
-    <!-- Hero Section -->
-    <section class="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-        <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-16 md:py-24">
-            <div class="text-center max-w-3xl mx-auto">
-                <div
-                    class="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-semibold mb-6">
-                    <i class="fas fa-brain"></i>
-                    <span>Chuyển đổi số nhân sự</span>
-                </div>
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
-                    Về <span class="text-blue-600">SmartCV</span>
-                </h1>
-                <p class="text-xl text-gray-600 leading-relaxed">
-                    Chúng tôi kiến tạo nền tảng kết nối việc làm thông minh,
-                    nơi AI đồng hành cùng bạn trên mọi chặng đường sự nghiệp.
-                </p>
-            </div>
-        </div>
-    </section>
+    <main>
+        <!-- Hero Section -->
+        <section class="relative overflow-hidden bg-gradient-to-br from-blue-600 to-indigo-700">
+            <div class="absolute inset-0 bg-black/20"></div>
+            <div class="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full filter blur-3xl"></div>
+            <div class="absolute bottom-0 left-0 w-96 h-96 bg-white/10 rounded-full filter blur-3xl"></div>
 
-    <!-- Mission & Vision -->
-    <section class="py-16 bg-white">
-        <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
-            <div class="grid md:grid-cols-2 gap-8">
-                <div
-                    class="bg-gradient-to-br from-blue-50 to-white rounded-2xl p-8 border border-blue-100 shadow-sm hover:shadow-md transition">
-                    <div class="w-14 h-14 rounded-xl bg-blue-100 flex items-center justify-center mb-5">
-                        <i class="fas fa-bullseye text-blue-600 text-2xl"></i>
+            <div class="relative max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-20 md:py-28 text-center">
+                <div class="max-w-3xl mx-auto">
+                    <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
+                        <i class="fas fa-info-circle text-white text-sm"></i>
+                        <span class="text-sm font-medium text-white">Về chúng tôi</span>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-3">Sứ mệnh</h3>
-                    <p class="text-gray-600 leading-relaxed">
-                        Mang đến giải pháp tuyển dụng thông minh, kết nối đúng người - đúng việc,
-                        giúp ứng viên tiết kiệm thời gian tìm kiếm và doanh nghiệp tối ưu hóa quy trình tuyển dụng.
-                    </p>
-                </div>
-                <div
-                    class="bg-gradient-to-br from-indigo-50 to-white rounded-2xl p-8 border border-indigo-100 shadow-sm hover:shadow-md transition">
-                    <div class="w-14 h-14 rounded-xl bg-indigo-100 flex items-center justify-center mb-5">
-                        <i class="fas fa-eye text-indigo-600 text-2xl"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-3">Tầm nhìn</h3>
-                    <p class="text-gray-600 leading-relaxed">
-                        Trở thành nền tảng kết nối việc làm hàng đầu Đông Nam Á dựa trên AI,
-                        nơi mọi người đều có cơ hội tiếp cận công việc phù hợp nhất với năng lực.
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6">
+                        Cách mạng hóa tuyển dụng <span class="border-b-4 border-white/50">bằng AI</span>
+                    </h1>
+                    <p class="text-lg text-blue-100 max-w-2xl mx-auto leading-relaxed">
+                        SmartCV được xây dựng với sứ mệnh kết nối nhân tài với cơ hội việc làm phù hợp nhất,
+                        sử dụng công nghệ trí tuệ nhân tạo tiên tiến nhất.
                     </p>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Story Timeline -->
-    <section class="py-16 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
-            <div class="text-center max-w-2xl mx-auto mb-12">
-                <span class="text-blue-600 text-sm font-semibold tracking-wide uppercase">Hành trình phát triển</span>
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mt-2">Câu chuyện SmartCV</h2>
-                <p class="text-gray-500 mt-4">Từ ý tưởng đến hiện thực, chúng tôi không ngừng đổi mới mỗi ngày</p>
-            </div>
-
-            <div class="relative">
-                <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-0.5 h-full bg-blue-200"></div>
-
-                <div class="grid gap-8">
-                    <div class="relative flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-12">
-                        <div class="md:w-1/2 md:text-right">
-                            <div
-                                class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition border-l-4 border-blue-500">
-                                <div class="flex items-center gap-3 mb-3 md:justify-end">
-                                    <span class="text-3xl font-bold text-blue-600">2022</span>
-                                    <i class="fas fa-rocket text-blue-500 text-2xl"></i>
+        <!-- Mission & Vision -->
+        <section class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="order-2 md:order-1">
+                        <span
+                            class="text-blue-600 text-sm font-semibold tracking-wide uppercase bg-blue-50 px-4 py-1.5 rounded-full">Sứ
+                            mệnh</span>
+                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mt-4 mb-6">Kết nối đúng người - Đúng việc
+                        </h2>
+                        <p class="text-gray-600 leading-relaxed mb-4">
+                            Chúng tôi tin rằng mỗi người đều xứng đáng có một công việc phù hợp với đam mê và năng lực của
+                            mình.
+                            SmartCV ra đời với mục tiêu loại bỏ rào cản trong tuyển dụng, giúp ứng viên tìm được việc làm mơ
+                            ước
+                            và doanh nghiệp tìm được nhân tài xuất sắc.
+                        </p>
+                        <p class="text-gray-600 leading-relaxed">
+                            Với sức mạnh của trí tuệ nhân tạo, chúng tôi phân tích hàng ngàn điểm dữ liệu để đưa ra
+                            những gợi ý chính xác nhất, tiết kiệm thời gian và chi phí cho cả hai bên.
+                        </p>
+                        <div class="flex items-center gap-6 mt-8">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-users text-blue-500 text-2xl"></i>
+                                <div>
+                                    <div class="font-bold text-gray-900">10,000+</div>
+                                    <div class="text-xs text-gray-500">Ứng viên</div>
                                 </div>
-                                <h3 class="text-xl font-bold text-gray-800 mb-2">Khởi nghiệp</h3>
-                                <p class="text-gray-600">Thành lập SmartCV với sứ mệnh ứng dụng AI vào lĩnh vực nhân sự, bắt
-                                    đầu với đội ngũ 5 thành viên.</p>
                             </div>
-                        </div>
-                        <div
-                            class="hidden md:block w-8 h-8 rounded-full bg-blue-500 border-4 border-white shadow-md absolute left-1/2 transform -translate-x-1/2">
-                        </div>
-                        <div class="md:w-1/2"></div>
-                    </div>
-
-                    <div class="relative flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-12">
-                        <div class="md:w-1/2"></div>
-                        <div
-                            class="hidden md:block w-8 h-8 rounded-full bg-blue-500 border-4 border-white shadow-md absolute left-1/2 transform -translate-x-1/2">
-                        </div>
-                        <div class="md:w-1/2">
-                            <div
-                                class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition border-l-4 border-blue-500">
-                                <div class="flex items-center gap-3 mb-3">
-                                    <span class="text-3xl font-bold text-blue-600">2023</span>
-                                    <i class="fas fa-users text-blue-500 text-2xl"></i>
+                            <div class="w-px h-10 bg-gray-200"></div>
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-building text-blue-500 text-2xl"></i>
+                                <div>
+                                    <div class="font-bold text-gray-900">500+</div>
+                                    <div class="text-xs text-gray-500">Doanh nghiệp</div>
                                 </div>
-                                <h3 class="text-xl font-bold text-gray-800 mb-2">Mở rộng quy mô</h3>
-                                <p class="text-gray-600">Đạt 100.000+ người dùng, hợp tác với 500+ doanh nghiệp, ra mắt tính
-                                    năng AI CV Parsing.</p>
+                            </div>
+                            <div class="w-px h-10 bg-gray-200"></div>
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-check-circle text-blue-500 text-2xl"></i>
+                                <div>
+                                    <div class="font-bold text-gray-900">95%</div>
+                                    <div class="text-xs text-gray-500">Tỷ lệ hài lòng</div>
+                                </div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="relative flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-12">
-                        <div class="md:w-1/2 md:text-right">
-                            <div
-                                class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition border-l-4 border-blue-500">
-                                <div class="flex items-center gap-3 mb-3 md:justify-end">
-                                    <span class="text-3xl font-bold text-blue-600">2024</span>
-                                    <i class="fas fa-chart-line text-blue-500 text-2xl"></i>
+                    <div class="order-1 md:order-2">
+                        <div class="relative">
+                            <div class="bg-gradient-to-br from-blue-100 to-indigo-100 rounded-3xl p-8 shadow-xl">
+                                <div class="text-center">
+                                    <i class="fas fa-quote-left text-blue-300 text-4xl mb-4"></i>
+                                    <p class="text-gray-700 italic text-lg leading-relaxed">
+                                        "Công nghệ không chỉ thay đổi cách chúng ta làm việc,
+                                        mà còn thay đổi cách chúng ta kết nối với nhau."
+                                    </p>
+                                    <div class="mt-4">
+                                        <div class="font-semibold text-gray-900">Đội ngũ SmartCV</div>
+                                        <div class="text-sm text-gray-500">Nền tảng tuyển dụng thông minh</div>
+                                    </div>
                                 </div>
-                                <h3 class="text-xl font-bold text-gray-800 mb-2">Tăng trưởng vượt bậc</h3>
-                                <p class="text-gray-600">Mở rộng thị trường ra khu vực phía Nam, ra mắt ứng dụng mobile và
-                                    tính năng Smart Job Matching.</p>
                             </div>
-                        </div>
-                        <div
-                            class="hidden md:block w-8 h-8 rounded-full bg-blue-500 border-4 border-white shadow-md absolute left-1/2 transform -translate-x-1/2">
-                        </div>
-                        <div class="md:w-1/2"></div>
-                    </div>
-
-                    <div class="relative flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-12">
-                        <div class="md:w-1/2"></div>
-                        <div
-                            class="hidden md:block w-8 h-8 rounded-full bg-blue-500 border-4 border-white shadow-md absolute left-1/2 transform -translate-x-1/2">
-                        </div>
-                        <div class="md:w-1/2">
-                            <div
-                                class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition border-l-4 border-blue-500">
-                                <div class="flex items-center gap-3 mb-3">
-                                    <span class="text-3xl font-bold text-blue-600">2025</span>
-                                    <i class="fas fa-globe-asia text-blue-500 text-2xl"></i>
-                                </div>
-                                <h3 class="text-xl font-bold text-gray-800 mb-2">Vươn tầm quốc tế</h3>
-                                <p class="text-gray-600">Mở rộng hợp tác quốc tế, ra mắt hệ sinh thái AI toàn diện cho thị
-                                    trường nhân sự.</p>
+                            <div class="absolute -top-4 -right-4 w-24 h-24 bg-blue-200 rounded-full opacity-50 -z-10"></div>
+                            <div class="absolute -bottom-4 -left-4 w-20 h-20 bg-indigo-200 rounded-full opacity-50 -z-10">
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Core Values -->
-    <section class="py-16 bg-white">
-        <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
-            <div class="text-center max-w-2xl mx-auto mb-12">
-                <span class="text-blue-600 text-sm font-semibold tracking-wide uppercase">Giá trị cốt lõi</span>
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mt-2">Điều chúng tôi tin tưởng</h2>
-                <p class="text-gray-500 mt-4">5 giá trị định hình mọi hoạt động của SmartCV</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-                <div class="text-center group">
-                    <div
-                        class="w-20 h-20 rounded-full bg-blue-50 group-hover:bg-blue-100 flex items-center justify-center mx-auto mb-4 transition">
-                        <i class="fas fa-lightbulb text-blue-600 text-2xl"></i>
-                    </div>
-                    <h3 class="font-bold text-gray-800 mb-2">Đổi mới sáng tạo</h3>
-                    <p class="text-sm text-gray-500">Không ngừng cập nhật công nghệ mới</p>
+        <!-- Core Values -->
+        <section class="py-20 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
+                <div class="text-center max-w-2xl mx-auto mb-12">
+                    <span
+                        class="text-blue-600 text-sm font-semibold tracking-wide uppercase bg-blue-50 px-4 py-1.5 rounded-full">Giá
+                        trị cốt lõi</span>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mt-4">Điều chúng tôi tin tưởng</h2>
+                    <p class="text-gray-500 mt-4">Những nguyên tắc định hướng mọi hoạt động của SmartCV</p>
                 </div>
-                <div class="text-center group">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div
-                        class="w-20 h-20 rounded-full bg-blue-50 group-hover:bg-blue-100 flex items-center justify-center mx-auto mb-4 transition">
-                        <i class="fas fa-shield-alt text-blue-600 text-2xl"></i>
+                        class="bg-white rounded-2xl p-6 text-center shadow-sm hover:shadow-xl transition-all duration-300 group">
+                        <div
+                            class="w-16 h-16 mx-auto bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl flex items-center justify-center mb-4 group-hover:from-blue-500 group-hover:to-blue-600 transition-all">
+                            <i class="fas fa-lightbulb text-blue-600 text-2xl group-hover:text-white transition-all"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Đổi mới sáng tạo</h3>
+                        <p class="text-gray-500 text-sm">Không ngừng cải tiến công nghệ để mang lại trải nghiệm tốt nhất.
+                        </p>
                     </div>
-                    <h3 class="font-bold text-gray-800 mb-2">Bảo mật tuyệt đối</h3>
-                    <p class="text-sm text-gray-500">Dữ liệu người dùng được bảo vệ</p>
-                </div>
-                <div class="text-center group">
                     <div
-                        class="w-20 h-20 rounded-full bg-blue-50 group-hover:bg-blue-100 flex items-center justify-center mx-auto mb-4 transition">
-                        <i class="fas fa-handshake text-blue-600 text-2xl"></i>
+                        class="bg-white rounded-2xl p-6 text-center shadow-sm hover:shadow-xl transition-all duration-300 group">
+                        <div
+                            class="w-16 h-16 mx-auto bg-gradient-to-br from-green-100 to-green-200 rounded-2xl flex items-center justify-center mb-4 group-hover:from-green-500 group-hover:to-green-600 transition-all">
+                            <i class="fas fa-handshake text-green-600 text-2xl group-hover:text-white transition-all"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Tin cậy - Minh bạch</h3>
+                        <p class="text-gray-500 text-sm">Xây dựng niềm tin thông qua sự minh bạch trong mọi giao dịch.</p>
                     </div>
-                    <h3 class="font-bold text-gray-800 mb-2">Đồng hành</h3>
-                    <p class="text-sm text-gray-500">Cùng phát triển với đối tác</p>
-                </div>
-                <div class="text-center group">
                     <div
-                        class="w-20 h-20 rounded-full bg-blue-50 group-hover:bg-blue-100 flex items-center justify-center mx-auto mb-4 transition">
-                        <i class="fas fa-chart-simple text-blue-600 text-2xl"></i>
+                        class="bg-white rounded-2xl p-6 text-center shadow-sm hover:shadow-xl transition-all duration-300 group">
+                        <div
+                            class="w-16 h-16 mx-auto bg-gradient-to-br from-purple-100 to-purple-200 rounded-2xl flex items-center justify-center mb-4 group-hover:from-purple-500 group-hover:to-purple-600 transition-all">
+                            <i class="fas fa-chart-line text-purple-600 text-2xl group-hover:text-white transition-all"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Phát triển bền vững</h3>
+                        <p class="text-gray-500 text-sm">Tạo ra giá trị lâu dài cho cộng đồng và xã hội.</p>
                     </div>
-                    <h3 class="font-bold text-gray-800 mb-2">Hiệu quả</h3>
-                    <p class="text-sm text-gray-500">Tiết kiệm thời gian, tối ưu chi phí</p>
-                </div>
-                <div class="text-center group">
                     <div
-                        class="w-20 h-20 rounded-full bg-blue-50 group-hover:bg-blue-100 flex items-center justify-center mx-auto mb-4 transition">
-                        <i class="fas fa-heart text-blue-600 text-2xl"></i>
+                        class="bg-white rounded-2xl p-6 text-center shadow-sm hover:shadow-xl transition-all duration-300 group">
+                        <div
+                            class="w-16 h-16 mx-auto bg-gradient-to-br from-amber-100 to-amber-200 rounded-2xl flex items-center justify-center mb-4 group-hover:from-amber-500 group-hover:to-amber-600 transition-all">
+                            <i class="fas fa-heart text-amber-600 text-2xl group-hover:text-white transition-all"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Lấy khách hàng làm trung tâm</h3>
+                        <p class="text-gray-500 text-sm">Luôn lắng nghe và thấu hiểu nhu cầu của người dùng.</p>
                     </div>
-                    <h3 class="font-bold text-gray-800 mb-2">Tận tâm</h3>
-                    <p class="text-sm text-gray-500">Luôn lắng nghe và thấu hiểu</p>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Team Section -->
-    <section class="py-16 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
-            <div class="text-center max-w-2xl mx-auto mb-12">
-                <span class="text-blue-600 text-sm font-semibold tracking-wide uppercase">Đội ngũ</span>
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mt-2">Những người đứng sau SmartCV</h2>
-                <p class="text-gray-500 mt-4">Chúng tôi là tập thể đam mê công nghệ và khát khao tạo ra giá trị</p>
-            </div>
+        <!-- Our Story Timeline -->
+        <section class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
+                <div class="text-center max-w-2xl mx-auto mb-12">
+                    <span
+                        class="text-blue-600 text-sm font-semibold tracking-wide uppercase bg-blue-50 px-4 py-1.5 rounded-full">Hành
+                        trình phát triển</span>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mt-4">Câu chuyện của chúng tôi</h2>
+                    <p class="text-gray-500 mt-4">Từ ý tưởng đến hiện thực hóa sứ mệnh kết nối nhân tài</p>
+                </div>
+                <div class="relative">
+                    <div
+                        class="absolute left-1/2 transform -translate-x-1/2 w-0.5 h-full bg-gradient-to-b from-blue-200 via-blue-400 to-blue-200 hidden md:block">
+                    </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div class="text-center group">
-                    <div
-                        class="w-32 h-32 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-105 transition">
-                        <i class="fas fa-user-tie text-white text-4xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-800">Nguyễn Tất Kiệt</h3>
-                    <p class="text-blue-600 text-sm font-medium mb-2">CEO & Founder</p>
-                    <p class="text-gray-500 text-sm">10+ năm kinh nghiệm trong lĩnh vực AI và nhân sự</p>
-                </div>
-                <div class="text-center group">
-                    <div
-                        class="w-32 h-32 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-105 transition">
-                        <i class="fas fa-laptop-code text-white text-4xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-800">Nguyễn Tất Kiệt</h3>
-                    <p class="text-blue-600 text-sm font-medium mb-2">CTO</p>
-                    <p class="text-gray-500 text-sm">Chuyên gia Machine Learning, từng làm tại Google</p>
-                </div>
-                <div class="text-center group">
-                    <div
-                        class="w-32 h-32 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-105 transition">
-                        <i class="fas fa-chart-line text-white text-4xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-800">Nguyễn Tất Kiệt</h3>
-                    <p class="text-blue-600 text-sm font-medium mb-2">CPO</p>
-                    <p class="text-gray-500 text-sm">Đam mê xây dựng sản phẩm có tác động xã hội</p>
-                </div>
-                <div class="text-center group">
-                    <div
-                        class="w-32 h-32 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-105 transition">
-                        <i class="fas fa-handshake text-white text-4xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-800">Nguyễn Tất Kiệt</h3>
-                    <p class="text-blue-600 text-sm font-medium mb-2">CGO</p>
-                    <p class="text-gray-500 text-sm">Xây dựng hệ sinh thái đối tác bền vững</p>
-                </div>
-            </div>
-        </div>
-    </section>
+                    <div class="grid md:grid-cols-2 gap-8 relative">
+                        <div class="text-right md:pr-12">
+                            <div class="bg-blue-50 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all">
+                                <div
+                                    class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-600 text-white font-bold mb-4">
+                                    1</div>
+                                <h3 class="text-xl font-bold text-gray-900">2022 - Ý tưởng hình thành</h3>
+                                <p class="text-gray-500 mt-2">Nhóm sáng lập nhận thấy những bất cập trong tuyển dụng truyền
+                                    thống và bắt đầu ấp ủ ý tưởng về nền tảng AI.</p>
+                            </div>
+                        </div>
+                        <div class="md:pl-12"></div>
 
-    <!-- Stats Section -->
-    <section class="py-16 bg-white">
-        <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-                <div class="text-center">
-                    <div class="text-4xl md:text-5xl font-bold text-blue-600 mb-2">500+</div>
-                    <p class="text-gray-600 font-medium">Doanh nghiệp đối tác</p>
-                </div>
-                <div class="text-center">
-                    <div class="text-4xl md:text-5xl font-bold text-blue-600 mb-2">100K+</div>
-                    <p class="text-gray-600 font-medium">Người dùng tin tưởng</p>
-                </div>
-                <div class="text-center">
-                    <div class="text-4xl md:text-5xl font-bold text-blue-600 mb-2">98%</div>
-                    <p class="text-gray-600 font-medium">Độ chính xác của AI</p>
-                </div>
-                <div class="text-center">
-                    <div class="text-4xl md:text-5xl font-bold text-blue-600 mb-2">24/7</div>
-                    <p class="text-gray-600 font-medium">Hỗ trợ khách hàng</p>
+                        <div class="md:pl-12 order-3 md:order-4">
+                            <div class="bg-blue-50 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all">
+                                <div
+                                    class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-600 text-white font-bold mb-4">
+                                    2</div>
+                                <h3 class="text-xl font-bold text-gray-900">2023 - Ra mắt phiên bản Beta</h3>
+                                <p class="text-gray-500 mt-2">SmartCV chính thức ra mắt với các tính năng phân tích CV cơ
+                                    bản, thu hút 500+ người dùng thử nghiệm.</p>
+                            </div>
+                        </div>
+                        <div class="text-right md:pr-12 order-4 md:order-3"></div>
+
+                        <div class="text-right md:pr-12">
+                            <div class="bg-blue-50 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all">
+                                <div
+                                    class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-600 text-white font-bold mb-4">
+                                    3</div>
+                                <h3 class="text-xl font-bold text-gray-900">2024 - Mở rộng và phát triển</h3>
+                                <p class="text-gray-500 mt-2">Tích hợp AI Matching, kết nối với 200+ doanh nghiệp, phục vụ
+                                    hơn 10,000 ứng viên trên toàn quốc.</p>
+                            </div>
+                        </div>
+                        <div class="md:pl-12"></div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- CTA Section -->
-    <section class="py-16 bg-gradient-to-r from-blue-600 to-indigo-700">
-        <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 text-center">
-            <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Sẵn sàng đồng hành cùng SmartCV?</h2>
-            <p class="text-blue-100 text-lg mb-8 max-w-2xl mx-auto">
-                Hãy bắt đầu hành trình tìm kiếm công việc mơ ước hoặc kết nối với ứng viên tiềm năng ngay hôm nay.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="#"
-                    class="px-8 py-3 bg-white text-blue-600 font-semibold rounded-xl hover:bg-gray-100 transition shadow-lg flex items-center justify-center gap-2">
-                    <i class="fas fa-cloud-upload-alt"></i> Tải CV ngay
-                </a>
-                <a href="{{ url('/contact') }}"
-                    class="px-8 py-3 border-2 border-white text-white font-semibold rounded-xl hover:bg-white hover:text-blue-600 transition flex items-center justify-center gap-2">
-                    <i class="fas fa-envelope"></i> Liên hệ tư vấn
-                </a>
+        <!-- Team Section -->
+        <section class="py-20 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
+                <div class="text-center max-w-2xl mx-auto mb-12">
+                    <span
+                        class="text-blue-600 text-sm font-semibold tracking-wide uppercase bg-blue-50 px-4 py-1.5 rounded-full">Đội
+                        ngũ của chúng tôi</span>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mt-4">Những người đứng sau SmartCV</h2>
+                    <p class="text-gray-500 mt-4">Đam mê, tận tâm và luôn hướng đến sự hoàn hảo</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div
+                        class="bg-white rounded-2xl p-6 text-center shadow-sm hover:shadow-xl transition-all duration-300 group">
+                        <div
+                            class="w-32 h-32 mx-auto rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-4xl font-bold mb-4 shadow-lg">
+                            NTK
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800">Kiệt Nguyễn</h3>
+                        <p class="text-blue-600 text-sm mb-3">CEO & Founder</p>
+                        <p class="text-gray-500 text-sm">10 năm kinh nghiệm trong lĩnh vực AI và tuyển dụng.</p>
+                    </div>
+                    <div
+                        class="bg-white rounded-2xl p-6 text-center shadow-sm hover:shadow-xl transition-all duration-300 group">
+                        <div
+                            class="w-32 h-32 mx-auto rounded-full bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center text-white text-4xl font-bold mb-4 shadow-lg">
+                            NTK
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800">Kiệt Nguyễn</h3>
+                        <p class="text-blue-600 text-sm mb-3">CTO</p>
+                        <p class="text-gray-500 text-sm">Chuyên gia Machine Learning với bằng Tiến sĩ tại Nhật Bản.</p>
+                    </div>
+                    <div
+                        class="bg-white rounded-2xl p-6 text-center shadow-sm hover:shadow-xl transition-all duration-300 group">
+                        <div
+                            class="w-32 h-32 mx-auto rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center text-white text-4xl font-bold mb-4 shadow-lg">
+                            NTK
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800">Kiệt Nguyễn</h3>
+                        <p class="text-blue-600 text-sm mb-3">Head of Product</p>
+                        <p class="text-gray-500 text-sm">Đam mê tạo ra những sản phẩm có tác động tích cực.</p>
+                    </div>
+                    <div
+                        class="bg-white rounded-2xl p-6 text-center shadow-sm hover:shadow-xl transition-all duration-300 group">
+                        <div
+                            class="w-32 h-32 mx-auto rounded-full bg-gradient-to-br from-pink-400 to-pink-600 flex items-center justify-center text-white text-4xl font-bold mb-4 shadow-lg">
+                            NTK
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800">Kiệt Nguyễn</h3>
+                        <p class="text-blue-600 text-sm mb-3">Marketing Director</p>
+                        <p class="text-gray-500 text-sm">Chiến lược gia truyền thông với nhiều năm kinh nghiệm.</p>
+                    </div>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="py-20 bg-gradient-to-r from-blue-600 to-indigo-700">
+            <div class="max-w-4xl mx-auto px-5 sm:px-8 lg:px-12 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Tham gia cùng chúng tôi</h2>
+                <p class="text-blue-100 text-lg mb-8">Hãy để AI giúp bạn tìm được công việc mơ ước hoặc nhân tài cho doanh
+                    nghiệp của bạn.</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="{{ route('candidate.cv.index') }}"
+                        class="px-8 py-3.5 bg-white text-blue-600 font-semibold rounded-xl hover:shadow-lg transition-all inline-flex items-center gap-2">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        Tải CV lên
+                    </a>
+                    <a href="{{ route('public.companies') }}"
+                        class="px-8 py-3.5 bg-transparent border-2 border-white text-white font-semibold rounded-xl hover:bg-white hover:text-blue-600 transition-all inline-flex items-center gap-2">
+                        <i class="fas fa-building"></i>
+                        Xem danh sách công ty
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
 @endsection

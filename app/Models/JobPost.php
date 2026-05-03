@@ -23,11 +23,21 @@ class JobPost extends Model
 
     public function skills()
     {
-        return $this->belongsToMany(Skill::class, 'job_post_skill');
+        return $this->belongsToMany(Skill::class, 'job_post_skill', 'job_post_id', 'skill_id');
     }
 
     public function applications()
     {
         return $this->hasMany(Application::class);
+    }
+
+    public function savedBy()
+    {
+        return $this->belongsToMany(
+            CandidateProfile::class,
+            'saved_jobs',
+            'job_post_id',
+            'candidate_id'
+        );
     }
 }
