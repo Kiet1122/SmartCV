@@ -160,7 +160,7 @@
                                     style="width: {{ $matchScore }}%"></div>
                             </div>
                             <div class="flex gap-2">
-                                <a href="#"
+                                <a href="{{ route('candidate.jobs.show', $job->id) }}"
                                     class="flex-1 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-center font-bold rounded-xl transition-all shadow-sm hover:shadow-md text-sm">
                                     Ứng tuyển ngay
                                 </a>
@@ -169,13 +169,6 @@
                     </div>
                 @endforeach
             </div>
-
-            {{-- Pagination --}}
-            {{-- @if($recommendedJobs->hasPages())
-            <div class="mt-10">
-                {{ $recommendedJobs->links() }}
-            </div>
-            @endif --}}
         @else
             {{-- Empty State --}}
             <div class="text-center py-20 bg-white rounded-3xl border border-gray-200 border-dashed">

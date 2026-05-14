@@ -13,7 +13,7 @@
                 <div class="flex items-center gap-2 text-sm text-blue-100 mb-6">
                     <a href="{{ route('public.home') }}" class="hover:text-white transition">Trang chủ</a>
                     <i class="fas fa-chevron-right text-xs"></i>
-                    <a href="{{ route('public.companies') }}" class="hover:text-white transition">Công ty</a>
+                    <a href="{{ route('candidate.companies') }}" class="hover:text-white transition">Công ty</a>
                     <i class="fas fa-chevron-right text-xs"></i>
                     <span class="text-white">{{ $company->company_name }}</span>
                 </div>
@@ -53,22 +53,6 @@
                                 <i class="fas fa-calendar-alt"></i> Tham gia: {{ $company->created_at->format('d/m/Y') }}
                             </span>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Stats Section -->
-        <section class="py-8 bg-white border-b border-gray-100">
-            <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
-                <div class="grid grid-cols-2 md:grid-cols-2 gap-2 text-center">
-                    <div class="p-4 rounded-xl bg-gray-50">
-                        <div class="text-2xl font-bold text-blue-600">{{ $stats['total_jobs'] }}</div>
-                        <div class="text-xs text-gray-500 mt-1">Tổng tin tuyển</div>
-                    </div>
-                    <div class="p-4 rounded-xl bg-gray-50">
-                        <div class="text-2xl font-bold text-green-600">{{ $stats['active_jobs'] }}</div>
-                        <div class="text-xs text-gray-500 mt-1">Đang tuyển</div>
                     </div>
                 </div>
             </div>
@@ -198,7 +182,7 @@
                                         <div class="flex flex-wrap items-start justify-between gap-4">
                                             <div class="flex-1">
                                                 <h3 class="text-lg font-bold text-gray-800 hover:text-blue-600 transition">
-                                                    <a href="{{ route('public.jobs.show', $job->id) }}">{{ $job->title }}</a>
+                                                    <a href="{{ route('candidate.jobs.show', $job->id) }}">{{ $job->title }}</a>
                                                 </h3>
                                                 <div class="flex flex-wrap gap-3 mt-2 text-sm text-gray-500">
                                                     <span class="flex items-center gap-1">
@@ -229,11 +213,7 @@
                                                 </div>
                                             </div>
                                             <div class="text-right">
-                                                <div class="text-2xl font-bold text-blue-600">
-                                                    {{ $job->applications_count ?? 0 }}
-                                                </div>
-                                                <div class="text-xs text-gray-400">ứng viên</div>
-                                                <a href="{{ route('public.jobs.show', $job->id) }}"
+                                                <a href="{{ route('candidate.jobs.show', $job->id) }}"
                                                     class="inline-block mt-3 px-4 py-2 bg-blue-50 text-blue-600 rounded-xl text-sm font-medium hover:bg-blue-100 transition">
                                                     Ứng tuyển →
                                                 </a>
@@ -286,13 +266,14 @@
                             <i class="fas fa-building text-blue-500"></i>
                             Công ty tương tự
                         </h2>
-                        <a href="{{ route('public.companies') }}" class="text-blue-600 hover:text-blue-700 text-sm font-medium">
+                        <a href="{{ route('candidate.companies') }}"
+                            class="text-blue-600 hover:text-blue-700 text-sm font-medium">
                             Xem tất cả <i class="fas fa-arrow-right ml-1"></i>
                         </a>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         @foreach($similarCompanies as $similar)
-                            <a href="{{ route('public.companies.show', $similar->id) }}"
+                            <a href="{{ route('candidate.companies.show', $similar->id) }}"
                                 class="group block bg-gray-50 rounded-xl p-4 hover:shadow-md transition-all">
                                 <div class="flex items-center gap-3">
                                     <div

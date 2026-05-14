@@ -138,66 +138,77 @@ class JobsController extends Controller
     public function apply(Request $request, $id)
     {
         $user = auth()->user();
-        $candidate = $user->candidateProfile; // Đảm bảo khớp với relation trong Model
+        $candidate = $user->candidateProfile;
         $job = JobPost::findOrFail($id);
-
-        // 1. Lấy CV mặc định - Sử dụng cột 'parsed_data' từ database của bạn
         $cv = $user->cvs()->where('is_default', 1)->first();
 
         if (!$cv) {
             return back()->with('error', 'Bạn cần chọn CV mặc định trước khi ứng tuyển.');
         }
 
-        // 2. Xử lý parsed_data để tránh lỗi 422
-        // Nếu bạn chưa cast cột này trong Model, hãy decode nó
-        $cvData = is_string($cv->parsed_data)
-            ? json_decode($cv->parsed_data, true)
-            : $cv->parsed_data;
-
-        // Nếu parsed_data trong DB đang null, gán mảng rỗng để Python không báo lỗi 'Input should be a valid dictionary'
+        $cvData = is_string($cv->parsed_data) ? json_decode($cv->parsed_data, true) : $cv->parsed_data;
         if (is_null($cvData)) {
             $cvData = [];
         }
 
         $matchScore = 0;
+        $rawScore = 0;
+        $startTime = microtime(true); // Bắt đầu đo thời gian
 
         try {
-            // 3. Gửi request sang AI (Đảm bảo Port 8003 hoặc port bạn đang chạy uvicorn)
             $response = Http::timeout(120)->post('http://127.0.0.1:8001/api/match-job-to-candidates', [
                 'job_description' => (string) $job->description,
-                'cvs' => [
-                    [
-                        'id' => (int) $cv->id,
-                        'cv_data' => $cvData // Gửi dữ liệu từ cột parsed_data
-                    ]
-                ]
+                'cvs' => [['id' => (int) $cv->id, 'cv_data' => $cvData]]
             ]);
 
             if ($response->successful()) {
-                // Lấy toàn bộ mảng results
                 $results = $response->json()['results'] ?? [];
-
-                // Kiểm tra xem mảng có phần tử không
                 if (!empty($results)) {
-                    // Lấy match_score của phần tử đầu tiên
                     $matchScore = $results[0]['match_score'] ?? 0;
+                    $rawScore = $results[0]['raw_cosine_score'] ?? 0;
                 }
-
-                Log::info("AI Matching Result for Job {$id}: " . $matchScore);
-            } else {
-                Log::error("AI Matching 422 Detail: ", $response->json());
             }
         } catch (\Exception $e) {
             Log::error("AI Connection Failed: " . $e->getMessage());
         }
 
-        // 4. Lưu vào bảng applications
-        Application::create([
+        $endTime = microtime(true);
+        // Tính toán thời gian xử lý (giây -> miligiây)
+        $processingTime = round(($endTime - $startTime) * 1000);
+
+        // 1. Lưu vào bảng chính: applications
+        $application = Application::create([
             'candidate_id' => $candidate->id,
             'job_post_id' => (int) $job->id,
             'cv_id' => (int) $cv->id,
-            'match_score' => (float) $matchScore, // Ép kiểu về float
+            'match_score' => (float) $matchScore,
             'status' => 'pending'
+        ]);
+
+        // 2. Lưu vào bảng: ai_matching_logs
+        \DB::table('ai_matching_logs')->insert([
+            'application_id' => $application->id,
+            'model_used' => 'Llama-3.1-8B', // Hoặc lấy từ config nếu Kiệt có cài đặt
+            'raw_score' => (float) $rawScore,
+            'final_score' => (float) $matchScore,
+            'processing_time_ms' => $processingTime,
+            'created_at' => now(),
+        ]);
+
+        // 3. Lưu vào bảng: application_logs (Theo cấu trúc bạn gửi)
+        // Lưu ý: Nếu bảng này để lưu vết thay đổi trạng thái thì thường có 'old_status', 'new_status'
+        // Nhưng dựa theo yêu cầu lưu 'raw_score', 'final_score', mình sẽ lưu theo cấu trúc log AI:
+        \DB::table('application_logs')->insert([
+            'application_id' => $application->id,
+            'old_status' => null,
+            'new_status' => 'pending',
+            'changed_by' => $user->id,
+            'changed_at' => now(),
+            // Nếu bảng application_logs của Kiệt có thêm các cột AI như bạn viết ở trên:
+            // 'model_used' => 'Llama-3.1-8B',
+            // 'raw_score' => (float) $rawScore,
+            // 'final_score' => (float) $matchScore,
+            // 'processing_time_ms' => $processingTime,
         ]);
 
         return back()->with('success', 'Ứng tuyển thành công! Điểm phù hợp: ' . $matchScore . '%');

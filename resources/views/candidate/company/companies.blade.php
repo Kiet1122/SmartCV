@@ -144,7 +144,7 @@
                                             <div class="text-xs text-gray-400">Nhân sự</div>
                                         </div>
                                     </div>
-                                    <a href="{{ route('public.companies.show', $company->id) }}"
+                                    <a href="{{ route('candidate.companies.show', $company->id) }}"
                                         class="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center gap-1">
                                         Xem chi tiết
                                         <i class="fas fa-arrow-right text-xs"></i>
@@ -219,12 +219,12 @@
                     const noResults = document.createElement('div');
                     noResults.className = 'col-span-3 text-center py-12 no-results';
                     noResults.innerHTML = `
-                                <div class="w-24 h-24 mx-auto bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                                    <i class="fas fa-search text-3xl text-gray-400"></i>
-                                </div>
-                                <h3 class="text-xl font-semibold text-gray-800 mb-2">Không tìm thấy công ty</h3>
-                                <p class="text-gray-500">Vui lòng thử lại với từ khóa khác</p>
-                            `;
+                                    <div class="w-24 h-24 mx-auto bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                                        <i class="fas fa-search text-3xl text-gray-400"></i>
+                                    </div>
+                                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Không tìm thấy công ty</h3>
+                                    <p class="text-gray-500">Vui lòng thử lại với từ khóa khác</p>
+                                `;
                     grid?.appendChild(noResults);
                 }
             } else {

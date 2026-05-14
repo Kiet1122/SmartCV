@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
+use Illuminate\Support\Facades\Mail;
 
 use App\Http\Controllers\Candidate\DashboardController;
 use App\Http\Controllers\Candidate\ProfileController;
@@ -23,7 +24,10 @@ use App\Http\Controllers\Recruiter\ReportController;
 use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\candidate\JobsController;
+use App\Http\Controllers\candidate\CompaniesController;
 
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\LogController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,11 +40,6 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::prefix('public')->name('public.')->group(function () {
 
     Route::get('/', [HomeController::class, 'index'])->name('home');
-
-
-
-
-
 
     Route::get('/about', [HomeController::class, 'about'])->name('about');
 
@@ -55,8 +54,11 @@ Route::prefix('public')->name('public.')->group(function () {
 Route::prefix('candidate')->name('candidate.')->group(function () {
 
     // Companies
-    Route::get('/companies', [HomeController::class, 'companies'])->name('companies');
-    Route::get('/companies/{company}', [HomeController::class, 'companyShow'])->name('companies.show');
+    Route::get('/companies', [CompaniesController::class, 'index'])
+        ->name('companies');
+
+    Route::get('/companies/{company}', [CompaniesController::class, 'show'])
+        ->name('companies.show');
 
     // Jobs
     Route::get('/jobs', [JobsController::class, 'index'])->name('jobs.index');
@@ -171,6 +173,7 @@ Route::middleware(['auth', 'role:recruiter'])
     ->name('recruiter.')
     ->group(function () {
         Route::get('/dashboard', [RecruiterDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard/chart-data', [RecruiterDashboardController::class, 'getChartDataAjax'])->name('dashboard.chart-data');
 
         Route::get('/profile', [CompanyProfileController::class, 'edit'])->name('profile');
         Route::put('/profile', [CompanyProfileController::class, 'update'])->name('update');
@@ -184,6 +187,11 @@ Route::middleware(['auth', 'role:recruiter'])
         Route::get('/applicants/{applicant}', [ApplicantController::class, 'show'])->name('applicants.show');
 
         Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+
+        Route::post('/applicants/{id}/update-status', [ApplicantController::class, 'updateStatus'])->name('applicants.update_status');
+
+        // Tải file CV
+        Route::get('/applicants/{id}/download-cv', [ApplicantController::class, 'downloadCv'])->name('applicants.download_cv');
     });
 
 
@@ -194,3 +202,31 @@ Route::middleware(['auth', 'role:recruiter'])
 | Trỏ vào thư mục: resources/views/admin/
 | Lưu ý: Sau này sẽ thêm Middleware `auth` và kiểm tra Role = Admin vào Group này
 */
+
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+
+    // Dashboard chính
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+
+    // Quản lý Users
+    Route::get('/users', [AdminController::class, 'users'])->name('users.index');
+    Route::get('/users/{id}', [AdminController::class, 'show'])->name('users.show');
+
+    // Quản lý Jobs
+    Route::get('/jobs', [AdminController::class, 'jobs'])->name('jobs.index');
+    Route::get('/jobs/{job}', [AdminController::class, 'jobDetail'])->name('jobs.show');
+
+    // Master Data (Skills & Languages)
+    Route::get('/master-data/skills', [AdminController::class, 'skills'])->name('skills.index');
+    Route::get('/master-data/languages', [AdminController::class, 'languages'])->name('languages.index');
+    Route::post('/skills', [AdminController::class, 'storeSkill'])->name('skills.store');
+    Route::delete('/skills/{id}', [AdminController::class, 'destroySkill'])->name('skills.destroy');
+
+    Route::post('/languages', [AdminController::class, 'storeLanguage'])->name('languages.store');
+    Route::delete('/languages/{id}', [AdminController::class, 'destroyLanguage'])->name('languages.destroy');
+
+    // Logs hệ thống AI
+    Route::get('/logs/ai-matching', [LogController::class, 'aiMatching'])->name('logs.ai_matching');
+
+    Route::patch('/users/{user}/change-role', [AdminController::class, 'changeRole'])->name('users.change-role');
+});

@@ -70,7 +70,7 @@ class ApplicationController extends Controller
             ]);
 
             if ($response->successful()) {
-                $aiResults = $response->json('results'); // Mảng: [['job_id' => 1, 'match_score' => 85.5], ...]
+                $aiResults = $response->json('results');
 
                 // Chuyển mảng kết quả thành dạng dễ tra cứu [id => score]
                 $scoreMap = collect($aiResults)->pluck('match_score', 'job_id');

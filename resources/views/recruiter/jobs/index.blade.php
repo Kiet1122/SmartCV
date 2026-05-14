@@ -37,10 +37,10 @@
             <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
                 <div class="flex items-center justify-between mb-2">
                     <span class="material-symbols-outlined text-green-500 text-2xl">check_circle</span>
-                    <span class="text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">Open</span>
+                    <span class="text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">Đang mở</span>
                 </div>
                 <h2 class="text-2xl font-bold text-gray-900">{{ $jobs->where('status', 'open')->count() }}</h2>
-                <span class="text-xs text-gray-400">Đang mở</span>
+                <span class="text-xs text-gray-400">Đang hoạt động</span>
             </div>
             <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
                 <div class="flex items-center justify-between mb-2">
@@ -53,10 +53,10 @@
             <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
                 <div class="flex items-center justify-between mb-2">
                     <span class="material-symbols-outlined text-gray-400 text-2xl">archive</span>
-                    <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">Closed</span>
+                    <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">Đã đóng</span>
                 </div>
                 <h2 class="text-2xl font-bold text-gray-900">{{ $jobs->where('status', 'closed')->count() }}</h2>
-                <span class="text-xs text-gray-400">Đã đóng</span>
+                <span class="text-xs text-gray-400">Đã kết thúc</span>
             </div>
         </div>
 
@@ -70,26 +70,13 @@
                     placeholder="Tìm kiếm theo tiêu đề...">
             </div>
             <div class="flex gap-3">
-                @php
-                    $statusMap = [
-                        'pending' => ['text' => 'Đang kiểm duyệt', 'class' => 'bg-yellow-100 text-yellow-700', 'icon' => '🟡'],
-                        'open' => ['text' => 'Đang mở', 'class' => 'bg-green-100 text-green-700', 'icon' => '🟢'],
-                        'rejected' => ['text' => 'Bị từ chối', 'class' => 'bg-red-100 text-red-700', 'icon' => '🔴'],
-                        'closed' => ['text' => 'Đã đóng', 'class' => 'bg-gray-100 text-gray-600', 'icon' => '⚫'],
-                    ];
-                @endphp
-
                 <select id="statusFilter"
                     class="px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20">
-
                     <option value="all">📋 Tất cả trạng thái</option>
-
-                    @foreach($statusMap as $key => $value)
-                        <option value="{{ $key }}">
-                            {{ $value['icon'] }} {{ $value['text'] }}
-                        </option>
-                    @endforeach
-
+                    <option value="pending">🟡 Đang kiểm duyệt</option>
+                    <option value="open">🟢 Đang mở</option>
+                    <option value="rejected">🔴 Bị từ chối</option>
+                    <option value="closed">⚫ Đã đóng</option>
                 </select>
                 <select id="dateFilter"
                     class="px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20">
@@ -107,6 +94,7 @@
                 <div class="job-card bg-white rounded-xl shadow-sm border border-gray-100 p-4 transition-all hover:shadow-md"
                     data-status="{{ $job->status }}" data-title="{{ Str::slug($job->title) }}"
                     data-date="{{ $job->created_at->timestamp }}">
+
                     <div class="flex flex-col lg:flex-row lg:items-center gap-4">
                         <!-- Thông tin chính -->
                         <div class="flex-1">
@@ -114,8 +102,23 @@
                                 <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
                                     <span class="material-symbols-outlined text-blue-500 text-2xl">work</span>
                                 </div>
-                                <div>
-                                    <h3 class="job-title font-bold text-gray-900 text-lg mb-1">{{ $job->title }}</h3>
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2 flex-wrap mb-1">
+                                        <h3 class="job-title font-bold text-gray-900 text-lg">{{ $job->title }}</h3>
+                                        @if($job->status === 'pending')
+                                            <span
+                                                class="inline-flex items-center gap-1 text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">
+                                                <span class="material-symbols-outlined text-sm">pending</span>
+                                                Chờ duyệt
+                                            </span>
+                                        @elseif($job->status === 'rejected')
+                                            <span
+                                                class="inline-flex items-center gap-1 text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full">
+                                                <span class="material-symbols-outlined text-sm">error</span>
+                                                Từ chối
+                                            </span>
+                                        @endif
+                                    </div>
                                     <div class="flex flex-wrap gap-2">
                                         <span
                                             class="inline-flex items-center gap-1 text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full">
@@ -127,12 +130,10 @@
                                             <span class="material-symbols-outlined text-sm">timeline</span>
                                             {{ $job->experience_required ?? 'Không yêu cầu' }} năm
                                         </span>
-                                    </div>
-                                    <div class="flex flex-wrap gap-2 mt-2">
                                         <span
                                             class="inline-flex items-center gap-1 text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full">
                                             <span class="material-symbols-outlined text-sm">schedule</span>
-                                            Ngày đăng: {{ $job->updated_at ? $job->updated_at->format('d/m/Y') : 'N/A' }}
+                                            Đăng: {{ $job->created_at->format('d/m/Y') }}
                                         </span>
                                     </div>
                                 </div>
@@ -166,23 +167,17 @@
                         </div>
 
                         <!-- Trạng thái & Action -->
-                        <div class="flex items-center justify-between min-w-[130px]">
-                            <td>
-                                @php
-                                    $statusMap = [
-                                        'pending' => ['text' => 'Đang kiểm duyệt', 'class' => 'bg-yellow-100 text-yellow-700'],
-                                        'open' => ['text' => 'Đang mở', 'class' => 'bg-green-100 text-green-700'],
-                                        'rejected' => ['text' => 'Bị từ chối', 'class' => 'bg-red-100 text-red-700'],
-                                        'closed' => ['text' => 'Đã đóng', 'class' => 'bg-gray-100 text-gray-600'],
-                                    ];
+                        <div class="flex items-center justify-between min-w-[140px]">
+                            <span class="px-3 py-1 text-xs font-semibold rounded-full {{ 
+                                                        $job->status === 'open' ? 'bg-green-100 text-green-700' :
+                ($job->status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+                    ($job->status === 'rejected' ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-600')) 
+                                                    }}">
+                                {{ $job->status === 'open' ? 'Đang mở' :
+                ($job->status === 'pending' ? 'Đang kiểm duyệt' :
+                    ($job->status === 'rejected' ? 'Bị từ chối' : 'Đã đóng')) }}
+                            </span>
 
-                                    $status = $statusMap[$job->status] ?? $statusMap['closed'];
-                                @endphp
-
-                                <span class="px-3 py-1 text-xs font-semibold rounded-full {{ $status['class'] }}">
-                                    {{ $status['text'] }}
-                                </span>
-                            </td>
                             <!-- Dropdown 3 chấm -->
                             <div class="relative" x-data="{ open: false }">
                                 <button @click="open = !open" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
@@ -191,16 +186,18 @@
                                 <div x-show="open" @click.away="open = false"
                                     class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-10"
                                     x-cloak>
-                                    <form action="{{ route('recruiter.jobs.close', $job->id) }}" method="POST" class="block">
-                                        @csrf
-                                        @method('PATCH')
-                                        <button type="submit"
-                                            onclick="return confirm('Bạn có chắc chắn muốn đóng tin tuyển dụng này? Ứng viên sẽ không thể nộp hồ sơ nữa.')"
-                                            class="flex items-center w-full gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                                            <span class="material-symbols-outlined text-red-500 text-base">block</span>
-                                            Đóng tin
-                                        </button>
-                                    </form>
+                                    @if($job->status === 'open')
+                                        <form action="{{ route('recruiter.jobs.close', $job->id) }}" method="POST" class="block">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit"
+                                                onclick="return confirm('Bạn có chắc chắn muốn đóng tin tuyển dụng này?')"
+                                                class="flex items-center w-full gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                                                <span class="material-symbols-outlined text-red-500 text-base">block</span>
+                                                Đóng tin
+                                            </button>
+                                        </form>
+                                    @endif
                                     <a href="{{ route('recruiter.jobs.edit', $job->id) }}"
                                         class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                                         <span class="material-symbols-outlined text-amber-500 text-base">edit</span>

@@ -27,9 +27,13 @@
                                     </div>
 
                                     <div>
-                                        <h3 class="text-lg font-semibold text-blue-600 hover:text-blue-800">
-                                            <a href="#">{{ $job->title }}</a>
-                                        </h3>
+                                        @foreach($savedJobs as $job)
+                                            <h3 class="text-lg font-semibold text-blue-600 hover:text-blue-800">
+                                                <a href="{{ route('candidate.jobs.show', $job->id) }}">
+                                                    {{ $job->title }}
+                                                </a>
+                                            </h3>
+                                        @endforeach
                                         <p class="text-sm font-medium text-gray-900 mt-1">
                                             {{ $job->company->company_name ?? 'Công ty ẩn danh' }}
                                         </p>

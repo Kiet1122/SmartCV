@@ -133,6 +133,26 @@
                                 @enderror
                             </div>
 
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Email liên hệ
+                                </label>
+
+                                <div class="relative">
+                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                                        <span class="material-symbols-outlined text-lg">mail</span>
+                                    </span>
+
+                                    <input type="email" name="email" value="{{ old('email', $company->email) }}"
+                                        class="w-full pl-12 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition-all @error('email') border-red-500 @enderror"
+                                        placeholder="Nhập email liên hệ" required>
+                                </div>
+
+                                @error('email')
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
                             <!-- Website -->
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-2">Website</label>
@@ -143,6 +163,39 @@
                                     <input type="url" name="website" value="{{ old('website', $company->website) }}"
                                         class="w-full pl-12 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition-all"
                                         placeholder="https://example.com">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Lĩnh vực
+                                </label>
+
+                                <div class="relative">
+                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                                        <span class="material-symbols-outlined text-lg">business_center</span>
+                                    </span>
+
+                                    <input type="text" name="industry" value="{{ old('industry', $company->industry) }}"
+                                        class="w-full pl-12 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition-all"
+                                        placeholder="Ví dụ: Công nghệ thông tin">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Quy mô công ty
+                                </label>
+
+                                <div class="relative">
+                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                                        <span class="material-symbols-outlined text-lg">groups</span>
+                                    </span>
+
+                                    <input type="text" name="company_size"
+                                        value="{{ old('company_size', $company->company_size) }}"
+                                        class="w-full pl-12 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition-all"
+                                        placeholder="Ví dụ: 50-100 nhân viên">
                                 </div>
                             </div>
 

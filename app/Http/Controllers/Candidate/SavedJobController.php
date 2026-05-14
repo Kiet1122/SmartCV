@@ -18,9 +18,9 @@ class SavedJobController extends Controller
     {
         $user = Auth::user();
 
-        // Lấy danh sách việc làm đã lưu, kèm theo thông tin công ty để hiển thị
-        // Phân trang 10 công việc 1 trang
-        $savedJobs = $user->savedJobs()->with('company')->paginate(10);
+        $savedJobs = $user->savedJobs()
+            ->with('company')
+            ->paginate(10);
 
         return view('candidate.saved_jobs', compact('savedJobs'));
     }

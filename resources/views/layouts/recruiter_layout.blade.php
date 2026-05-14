@@ -214,9 +214,10 @@
                 <button @click="open = !open" class="flex items-center gap-2 focus:outline-none">
                     <div
                         class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-semibold shadow-md">
-                        {{ $userInitial }}
+                        {{ $user->company_name }}
                     </div>
-                    <span class="hidden md:inline text-sm text-gray-700">{{ $user ? $user->name : 'Recruiter' }}</span>
+                    <span
+                        class="hidden md:inline text-sm text-gray-700">{{ $user ? $user->company_name : 'Recruiter' }}</span>
                     <span class="material-symbols-outlined text-gray-400 text-sm">expand_more</span>
                 </button>
 
@@ -229,19 +230,13 @@
                     x-transition:leave-start="opacity-100 translate-y-0"
                     x-transition:leave-end="opacity-0 translate-y-1">
                     <div class="px-4 py-3 border-b border-gray-100">
-                        <p class="text-sm font-semibold text-gray-900">{{ $user ? $user->name : 'Recruiter' }}</p>
                         <p class="text-xs text-gray-500 mt-0.5">{{ $user ? $user->email : '' }}</p>
                     </div>
                     <div class="py-1">
                         <a href="{{ route('recruiter.profile') }}"
                             class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
                             <span class="material-symbols-outlined text-gray-400 text-base">account_circle</span>
-                            <span>Hồ sơ của tôi</span>
-                        </a>
-                        <a href="{{-- route('recruiter.settings') --}}"
-                            class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
-                            <span class="material-symbols-outlined text-gray-400 text-base">settings</span>
-                            <span>Cài đặt</span>
+                            <span>Thông tin công ty</span>
                         </a>
                         @if($company)
                             <a href="{{ route('recruiter.company.profile') }}"

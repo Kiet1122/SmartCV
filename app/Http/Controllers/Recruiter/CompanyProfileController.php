@@ -30,33 +30,47 @@ class CompanyProfileController extends Controller
 
         $request->validate([
             'company_name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
             'website' => 'nullable|url',
-            'address' => 'nullable|string|max:255', // Thêm validation cho address
+            'industry' => 'nullable|string|max:255',
+            'company_size' => 'nullable|string|max:255',
+            'address' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ], [
             'company_name.required' => 'Tên công ty không được để trống.',
+            'email.required' => 'Email không được để trống.',
+            'email.email' => 'Email không đúng định dạng.',
             'website.url' => 'Địa chỉ website không đúng định dạng.',
             'logo.image' => 'File tải lên phải là hình ảnh.',
         ]);
 
-        // Lấy các dữ liệu text
-        $data = $request->only(['company_name', 'website', 'address', 'description']);
+        // Lấy dữ liệu text
+        $data = $request->only([
+            'company_name',
+            'email',
+            'website',
+            'industry',
+            'company_size',
+            'address',
+            'description'
+        ]);
 
-        // Xử lý upload Logo
+        // Upload logo
         if ($request->hasFile('logo')) {
-            // 1. Xóa logo cũ nếu có để tiết kiệm bộ nhớ
+
+            // Xóa logo cũ
             if ($company->logo_url && Storage::disk('public')->exists($company->logo_url)) {
                 Storage::disk('public')->delete($company->logo_url);
             }
 
-            // 2. Lưu logo mới vào thư mục 'logos' trên disk 'public'
+            // Lưu logo mới
             $path = $request->file('logo')->store('logos', 'public');
 
-            // 3. Gán vào cột logo_url (khớp với Database của bạn)
             $data['logo_url'] = $path;
         }
 
-        // Cập nhật vào Database
+        // Update database
         $company->update($data);
 
         return back()->with('success', 'Hồ sơ công ty đã được cập nhật thành công!');

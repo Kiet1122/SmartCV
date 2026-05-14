@@ -126,7 +126,7 @@
 
                                 $statusConfig = [
                                     'pending' => ['class' => 'bg-amber-100 text-amber-700', 'icon' => 'pending', 'text' => 'Chờ duyệt'],
-                                    'approved' => ['class' => 'bg-green-100 text-green-700', 'icon' => 'check_circle', 'text' => 'Đã duyệt'],
+                                    'accepted' => ['class' => 'bg-green-100 text-green-700', 'icon' => 'check_circle', 'text' => 'Đã duyệt'],
                                     'rejected' => ['class' => 'bg-red-100 text-red-700', 'icon' => 'cancel', 'text' => 'Từ chối'],
                                     'shortlisted' => ['class' => 'bg-purple-100 text-purple-700', 'icon' => 'star', 'text' => 'Đã lưu']
                                 ];

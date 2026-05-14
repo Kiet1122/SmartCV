@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Recruiter;
 use App\Http\Controllers\Controller;
 use App\Models\JobPost;
 use App\Models\Skill;
+use App\Models\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
@@ -12,140 +13,213 @@ use Illuminate\Support\Facades\Log;
 
 class JobPostController extends Controller
 {
+    /**
+     * Display a listing of jobs for the current recruiter's company
+     */
     public function index()
     {
-        $companyId = Auth::user()->company->id;
-        $jobs = JobPost::where('company_id', $companyId)->latest()->get();
-        return view('recruiter.jobs.index', compact('jobs'));
+        $user = Auth::user();
+        $company = $user->company;
+
+        if (!$company) {
+            return redirect()->route('recruiter.company.setup')
+                ->with('error', 'Vui lòng cập nhật thông tin công ty trước.');
+        }
+
+        $companyId = $company->id;
+
+        // Get all jobs for this company with application count
+        $jobs = JobPost::where('company_id', $companyId)
+            ->withCount('applications')
+            ->with('skills')
+            ->latest()
+            ->get();
+
+        // Calculate total applicants across all jobs
+        $totalApplicants = Application::whereIn('job_post_id', JobPost::where('company_id', $companyId)->pluck('id'))
+            ->count();
+
+        return view('recruiter.jobs.index', compact('jobs', 'totalApplicants'));
     }
 
+    /**
+     * Show the form for creating a new job
+     */
     public function create()
     {
-        $skills = Skill::all();
+        $skills = Skill::orderBy('name')->get();
         return view('recruiter.jobs.form', compact('skills'));
     }
 
+    /**
+     * Show the form for editing a job
+     */
     public function edit(JobPost $job)
     {
-
-        $skills = Skill::all();
-
+        $skills = Skill::orderBy('name')->get();
         $selectedSkills = $job->skills->pluck('id')->toArray();
 
         return view('recruiter.jobs.form', compact('job', 'skills', 'selectedSkills'));
-
     }
 
+    /**
+     * Store a newly created job
+     */
     public function store(Request $request)
     {
         $this->validateJob($request);
 
-        // 1. Tạo tin với trạng thái ban đầu là 'pending' (Đang kiểm duyệt)
+        $companyId = Auth::user()->company->id;
+
+        // Create job with initial status 'pending'
         $job = JobPost::create([
-            'company_id' => Auth::user()->company->id,
+            'company_id' => $companyId,
             'title' => $request->title,
             'description' => $request->description,
-            'experience_required' => $request->experience_required,
+            'experience_required' => $request->experience_required ?? null,
+            'salary_range' => $request->salary_range ?? null,
+            'education_required' => $request->education_required ?? null,
             'status' => 'pending',
         ]);
 
+        // Sync skills
         if ($request->has('skills')) {
             $job->skills()->sync($request->skills);
         }
 
-        // 2. Chạy kiểm duyệt AI
+        // Run AI check
         $result = $this->runAICheck($job);
 
-        return redirect()->route('recruiter.jobs.index')->with($result['type'], $result['msg']);
+        return redirect()->route('recruiter.jobs.index')
+            ->with($result['type'], $result['msg']);
     }
 
+    /**
+     * Update the specified job
+     */
     public function update(Request $request, JobPost $job)
     {
         $this->validateJob($request);
 
-        // Khi cập nhật, đưa status về 'pending' ngay lập tức
-        $job->update(array_merge($request->all(), ['status' => 'pending']));
+        // Verify ownership
+        if ($job->company_id !== Auth::user()->company->id) {
+            return redirect()->route('recruiter.jobs.index')
+                ->with('error', 'Bạn không có quyền chỉnh sửa tin này.');
+        }
 
+        // Update job, reset status to pending for re-review
+        $job->update([
+            'title' => $request->title,
+            'description' => $request->description,
+            'experience_required' => $request->experience_required ?? null,
+            'salary_range' => $request->salary_range ?? null,
+            'education_required' => $request->education_required ?? null,
+            'status' => 'pending',
+        ]);
+
+        // Sync skills
         if ($request->has('skills')) {
             $job->skills()->sync($request->skills);
         }
 
-        // Chạy lại kiểm duyệt AI cho nội dung mới
+        // Run AI check again
         $result = $this->runAICheck($job);
 
-        return redirect()->route('recruiter.jobs.index')->with($result['type'], $result['msg']);
+        return redirect()->route('recruiter.jobs.index')
+            ->with($result['type'], $result['msg']);
     }
 
     /**
-     * Logic chạy kiểm duyệt AI chuyên sâu
+     * Close the specified job (stop accepting applications)
+     */
+    public function close(JobPost $job)
+    {
+        // Check ownership
+        if ($job->company_id !== Auth::user()->company->id) {
+            return redirect()->route('recruiter.jobs.index')
+                ->with('error', 'Bạn không có quyền thực hiện hành động này.');
+        }
+
+        $job->update(['status' => 'closed']);
+
+        return redirect()->route('recruiter.jobs.index')
+            ->with('success', 'Tin tuyển dụng đã được đóng thành công.');
+    }
+
+    /**
+     * Remove the specified job
+     */
+    public function destroy(JobPost $job)
+    {
+        // Check ownership
+        if ($job->company_id !== Auth::user()->company->id) {
+            return redirect()->route('recruiter.jobs.index')
+                ->with('error', 'Bạn không có quyền xóa tin này.');
+        }
+
+        $job->delete();
+
+        return redirect()->route('recruiter.jobs.index')
+            ->with('success', 'Đã xóa tin tuyển dụng.');
+    }
+
+    /**
+     * Validate job request
+     */
+    private function validateJob(Request $request)
+    {
+        return $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'experience_required' => 'nullable|numeric|min:0|max:50',
+            'salary_range' => 'nullable|string|max:100',
+            'education_required' => 'nullable|string|max:100',
+            'skills' => 'nullable|array',
+            'skills.*' => 'exists:skills,id',
+        ]);
+    }
+
+    /**
+     * Run AI check for job posting
      */
     private function runAICheck(JobPost $job)
     {
-        // Mặc định ban đầu
         $type = 'info';
         $msg = 'Tin đang trong quá trình kiểm duyệt bởi AI.';
 
         try {
-            // Gọi Microservice Llama 3.1 (Port 8003)
+            // Call Llama 3.1 Microservice (Port 8003)
             $response = Http::timeout(30)->post('http://127.0.0.1:8003/api/check-job', [
                 'title' => $job->title,
-                'description' => $job->description,
+                'description' => $job->description ?? '',
             ]);
 
             if ($response->successful()) {
                 $result = $response->json();
 
-                if ($result['is_safe'] === true) {
-                    // AI duyệt thành công -> Chuyển sang 'open' (Đang mở)
+                if (isset($result['is_safe']) && $result['is_safe'] === true) {
                     $job->update(['status' => 'open']);
                     $type = 'success';
-                    $msg = 'Kiểm duyệt hoàn tất. Tin tuyển dụng hiện đang được hiển thị!';
+                    $msg = '✅ Kiểm duyệt hoàn tất. Tin tuyển dụng hiện đang được hiển thị!';
                 } else {
-                    // AI từ chối -> Chuyển sang 'rejected' (Bị từ chối)
                     $job->update(['status' => 'rejected']);
                     $type = 'error';
-                    $msg = 'Tin bị từ chối do vi phạm: ' . ($result['reason'] ?? 'Nội dung không hợp lệ');
+                    $reason = $result['reason'] ?? 'Nội dung không hợp lệ';
+                    $msg = '❌ Tin bị từ chối do vi phạm: ' . $reason;
                 }
             } else {
-                // Lỗi kỹ thuật từ phía Server AI
-                $job->update(['status' => 'open']); // Tạm cho qua để tránh phiền người dùng
+                // AI service error - temporary allow
+                $job->update(['status' => 'open']);
                 $type = 'warning';
-                $msg = 'AI đang bận, tin đã được hiển thị tạm thời.';
+                $msg = '⚠️ Hệ thống AI đang bận, tin đã được hiển thị tạm thời.';
             }
         } catch (\Exception $e) {
             $job->update(['status' => 'open']);
             $type = 'warning';
-            $msg = 'Hệ thống kiểm duyệt gặp sự cố, tin của bạn đã được đăng.';
-            Log::error("Connection to Port 8003 failed: " . $e->getMessage());
+            $msg = '⚠️ Hệ thống kiểm duyệt gặp sự cố, tin của bạn đã được đăng.';
+            Log::error("AI Check failed for job {$job->id}: " . $e->getMessage());
         }
 
         return ['type' => $type, 'msg' => $msg];
-    }
-
-    private function validateJob(Request $request)
-    {
-        return $request->validate([
-            'title' => 'required|string|max:255',
-            'experience_required' => 'nullable|numeric',
-            'skills' => 'array'
-        ]);
-    }
-
-    public function destroy(JobPost $job)
-    {
-        $job->delete();
-        return back()->with('success', 'Đã xóa tin tuyển dụng.');
-    }
-
-    public function close(JobPost $job)
-    {
-        // Kiểm tra quyền sở hữu (chỉ nhà tuyển dụng tạo ra tin mới được đóng)
-        if ($job->company_id !== Auth::user()->company->id) {
-            return back()->with('error', 'Bạn không có quyền thực hiện hành động này.');
-        }
-
-        $job->update(['status' => 'closed']);
-
-        return back()->with('success', 'Tin tuyển dụng đã được đóng thành công.');
     }
 }

@@ -273,7 +273,7 @@
                         <i class="fas fa-cloud-upload-alt"></i>
                         Tải CV lên
                     </a>
-                    <a href="{{ route('public.companies') }}"
+                    <a href="{{ route('candidate.companies') }}"
                         class="px-8 py-3.5 bg-transparent border-2 border-white text-white font-semibold rounded-xl hover:bg-white hover:text-blue-600 transition-all inline-flex items-center gap-2">
                         <i class="fas fa-building"></i>
                         Xem danh sách công ty

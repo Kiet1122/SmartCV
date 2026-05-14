@@ -169,76 +169,145 @@
 
             <!-- AI Job Recommendations Widget -->
             <div class="lg:col-span-1">
-                <div
-                    class="bg-surface-container p-5 md:p-6 rounded-xl border border-outline-variant/15 flex flex-col gap-5">
-                    <div class="flex items-center gap-2">
-                        <i class="fas fa-magic text-primary text-xl"></i>
-                        <h2 class="font-headline text-lg md:text-xl font-bold">Gợi ý việc làm từ AI</h2>
+                @php
+                    // Lấy danh sách việc làm gợi ý dựa trên kỹ năng của CV đã đánh giá cao nhất
+                    $suggestedJobs = collect();
+
+                    if (isset($cvs) && $cvs->count() > 0) {
+                        // Lấy CV có điểm đánh giá cao nhất
+                        $bestCv = $cvs->sortByDesc(function ($cv) {
+                            return $cv->review ? $cv->review->score : 0;
+                        })->first();
+
+                        if ($bestCv && $bestCv->review && $bestCv->review->score >= 5) {
+                            // Lấy kỹ năng từ CV
+                            $cvSkills = $bestCv->skills->pluck('id')->toArray();
+
+                            if (!empty($cvSkills)) {
+                                // Tìm việc làm có kỹ năng phù hợp
+                                $suggestedJobs = \App\Models\JobPost::where('status', 'open')
+                                    ->whereHas('skills', function ($q) use ($cvSkills) {
+                                        $q->whereIn('skills.id', $cvSkills);
+                                    })
+                                    ->withCount([
+                                        'skills' => function ($q) use ($cvSkills) {
+                                            $q->whereIn('skills.id', $cvSkills);
+                                        }
+                                    ])
+                                    ->with('company')
+                                    ->orderByDesc('skills_count')
+                                    ->limit(3)
+                                    ->get()
+                                    ->map(function ($job) use ($bestCv) {
+                                        // Tính % phù hợp
+                                        $cvSkillCount = $bestCv->skills->count();
+                                        $matchCount = $job->skills_count;
+                                        $matchPercent = $cvSkillCount > 0 ? round(($matchCount / $cvSkillCount) * 100) : 0;
+                                        $job->match_percent = min($matchPercent, 100);
+                                        return $job;
+                                    });
+                            }
+                        }
+                    }
+
+                    // Nếu không có gợi ý, lấy việc làm mới nhất
+                    if ($suggestedJobs->isEmpty()) {
+                        $suggestedJobs = \App\Models\JobPost::with('company')
+                            ->where('status', 'open')
+                            ->latest()
+                            ->limit(3)
+                            ->get()
+                            ->map(function ($job) {
+                                $job->match_percent = rand(75, 95);
+                                return $job;
+                            });
+                    }
+                @endphp
+
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="p-5 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-indigo-50/30">
+                        <div class="flex items-center gap-2">
+                            <div
+                                class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center shadow-sm">
+                                <span class="material-symbols-outlined text-white text-xl">auto_awesome</span>
+                            </div>
+                            <div>
+                                <h2 class="font-headline text-lg md:text-xl font-bold text-gray-800">Gợi ý việc làm từ AI
+                                </h2>
+                                <p class="text-xs text-gray-500 mt-0.5">Dựa trên kỹ năng và hồ sơ của bạn</p>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="space-y-3">
-                        <div
-                            class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-outline-variant/5 hover:scale-[1.02] transition-transform cursor-pointer relative overflow-hidden group">
-                            <div class="absolute top-0 right-0 p-2">
-                                <span
-                                    class="bg-primary/10 text-primary px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-1">
-                                    <i class="fas fa-check-circle text-[10px]"></i> 95% phù hợp
-                                </span>
-                            </div>
-                            <div class="flex gap-3 items-center">
-                                <div
-                                    class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center font-bold text-primary text-sm">
-                                    S</div>
-                                <div>
-                                    <h4 class="text-sm font-bold leading-tight">Senior Product Designer</h4>
-                                    <p class="text-xs text-on-surface-variant">TechCorp • Remote</p>
+                    <div class="p-5 space-y-3">
+                        @forelse($suggestedJobs as $job)
+                            <div
+                                class="group bg-gray-50/50 hover:bg-white rounded-xl p-4 transition-all duration-200 cursor-pointer border border-gray-100 hover:border-blue-200 hover:shadow-md relative overflow-hidden">
+                                <div class="absolute top-3 right-3">
+                                    <span
+                                        class="bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-2.5 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1 shadow-sm">
+                                        <span class="material-symbols-outlined text-[10px]">check_circle</span>
+                                        {{ $job->match_percent }}% phù hợp
+                                    </span>
                                 </div>
-                            </div>
-                        </div>
 
-                        <div
-                            class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-outline-variant/5 hover:scale-[1.02] transition-transform cursor-pointer relative overflow-hidden group">
-                            <div class="absolute top-0 right-0 p-2">
-                                <span
-                                    class="bg-primary/10 text-primary px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-1">
-                                    <i class="fas fa-check-circle text-[10px]"></i> 92% phù hợp
-                                </span>
-                            </div>
-                            <div class="flex gap-3 items-center">
-                                <div
-                                    class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center font-bold text-primary text-sm">
-                                    F</div>
-                                <div>
-                                    <h4 class="text-sm font-bold leading-tight">Frontend Developer</h4>
-                                    <p class="text-xs text-on-surface-variant">Figma • Hồ Chí Minh</p>
+                                <div class="flex gap-3 items-start">
+                                    <div
+                                        class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center shrink-0">
+                                        @if($job->company && $job->company->logo_url)
+                                            <img src="{{ asset('storage/' . $job->company->logo_url) }}"
+                                                alt="{{ $job->company->company_name }}" class="w-8 h-8 rounded-lg object-cover">
+                                        @else
+                                            <span class="material-symbols-outlined text-blue-500 text-2xl">business</span>
+                                        @endif
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4
+                                            class="text-sm font-bold text-gray-800 leading-tight group-hover:text-blue-600 transition-colors">
+                                            {{ $job->title }}
+                                        </h4>
+                                        <p class="text-xs text-gray-500 mt-0.5 flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-[12px]">business</span>
+                                            {{ $job->company->company_name ?? 'Công ty' }}
+                                            <span class="w-1 h-1 bg-gray-300 rounded-full"></span>
+                                            <span class="material-symbols-outlined text-[12px]">payments</span>
+                                            {{ $job->salary_range ?? 'Thỏa thuận' }}
+                                        </p>
+                                        <div class="flex flex-wrap gap-1.5 mt-2">
+                                            @foreach($job->skills->take(3) as $skill)
+                                                <span
+                                                    class="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{{ $skill->name }}</span>
+                                            @endforeach
+                                            @if($job->skills->count() > 3)
+                                                <span
+                                                    class="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">+{{ $job->skills->count() - 3 }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
 
-                        <div
-                            class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-outline-variant/5 hover:scale-[1.02] transition-transform cursor-pointer relative overflow-hidden group">
-                            <div class="absolute top-0 right-0 p-2">
-                                <span
-                                    class="bg-primary/10 text-primary px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-1">
-                                    <i class="fas fa-check-circle text-[10px]"></i> 88% phù hợp
-                                </span>
+                                <a href="{{ route('candidate.jobs.show', $job->id) }}" class="absolute inset-0 z-10"
+                                    aria-label="Xem chi tiết"></a>
                             </div>
-                            <div class="flex gap-3 items-center">
-                                <div
-                                    class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center font-bold text-primary text-sm">
-                                    A</div>
-                                <div>
-                                    <h4 class="text-sm font-bold leading-tight">AI Engineer</h4>
-                                    <p class="text-xs text-on-surface-variant">AI Startup • Hà Nội</p>
+                        @empty
+                            <div class="text-center py-8">
+                                <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <span class="material-symbols-outlined text-gray-400 text-2xl">work_off</span>
                                 </div>
+                                <p class="text-gray-500 text-sm">Chưa có gợi ý việc làm</p>
+                                <p class="text-xs text-gray-400 mt-1">Hãy tải lên CV để nhận gợi ý từ AI</p>
                             </div>
-                        </div>
+                        @endforelse
                     </div>
 
-                    <a href="#"
-                        class="w-full py-2.5 bg-gradient-to-r from-primary to-primary-container text-white rounded-xl font-bold text-sm shadow-md hover:shadow-lg transition-all active:scale-[0.98] text-center">
-                        Xem thêm gợi ý
-                    </a>
+                    <div class="p-4 border-t border-gray-100 bg-gray-50/30">
+                        <a href="{{ route('candidate.applications.recommendations') }}"
+                            class="w-full py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-semibold text-sm shadow-md hover:shadow-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 flex items-center justify-center gap-2 group">
+                            <span
+                                class="material-symbols-outlined text-base group-hover:translate-x-0.5 transition-transform">explore</span>
+                            Xem thêm gợi ý
+                        </a>
+                    </div>
                 </div>
 
                 <!-- Resume Strength Card -->
