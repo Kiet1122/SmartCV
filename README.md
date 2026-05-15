@@ -1,4 +1,4 @@
-```markdown
+
 # 🚀 SmartCV - Hệ Thống Tuyển Dụng Thông Minh Tích Hợp AI
 
 <div align="center">
@@ -100,7 +100,7 @@ Thay vì sàng lọc hồ sơ thủ công tốn thời gian, hệ thống sử d
 
 ```bash
 # Clone dự án
-git clone https://github.com/your-repo/SmartCV.git
+git clone https://github.com/Kiet1122/SmartCV.git
 cd SmartCV
 
 # Cài đặt các thư viện PHP
